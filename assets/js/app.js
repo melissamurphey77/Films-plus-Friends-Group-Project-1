@@ -251,7 +251,7 @@ $('#results').on('click', function showMovies(){
       //creates access code that users will query
       var genKey = makeId()
       //for loop to create 5 posters and place them on page
-      for (var i=0;i<5; i++){
+      for (var i=1;i<6; i++){
           //varible for poster url
           var posterURL = "https://image.tmdb.org/t/p/w500" + response.results[i].poster_path
           //gets poster img based on URL
