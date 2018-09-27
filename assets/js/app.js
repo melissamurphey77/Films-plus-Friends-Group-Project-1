@@ -217,7 +217,6 @@ $('#results').on('click', function showMovies(){
   name = $("#nameField").val().trim();
   //Assigns the user inputed email to the email varriable
   email = $("#emailField").val().trim();
-  console.log("click event active")
 
 
 
@@ -267,11 +266,15 @@ $('#results').on('click', function showMovies(){
           $(imgDiv).append(poster)
           //pushes the new data up to firebase as it is gen
           //Exception - will need to modify to allow user to manually add items in
-          database.ref(genKey).child('Movie '+i).set({
+          database.ref(genKey+'/Movies').child('Movie '+i).set({
                   "Title": movieTitle,
                   "Poster": posterURL
               })
       }
+      database.ref(genKey).child('Host').set({
+        "Email": email,
+        "Name": name
+      })
       //creates button that will submit results and trigger firebase call
       var newBtn = $('<button class="btn text-center" type="submit">')
       $(newBtn).text("Confirm")
