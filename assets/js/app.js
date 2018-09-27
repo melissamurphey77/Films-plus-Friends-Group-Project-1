@@ -9,8 +9,13 @@ var config = {
   };
   firebase.initializeApp(config);
   var database = firebase.database()
-$('#results').on('click', function showMovies(){
-    event.preventDefault();
+  //create global variable to house genKey to ref later on
+  var genKey;
+
+  //function that populates movies after genre and rating are submited on prev page
+//$('#results').on('click', 
+function showMovies(){
+    //event.preventDefault();
     //removes html from container that will house new data on this page
     $('#container').empty()
     const API_KEY = "b20fd857a48febf56f02e2bba3f75e22"
@@ -19,10 +24,10 @@ $('#results').on('click', function showMovies(){
     var currentDate = moment().format("YYYY-MM-DD");
     console.log(currentDate)
     //API uses ID's to identify genres instead of string ex: 10402 = Mystery
-    var genreID = $('#genre').val().trim();
+    var genreID = "10402" //$('#genre').val().trim();
     //query is set to display rating less or equal to parameter so if pg-13 selected R or NC-17 will not populate. EXCEPTION - NR is technicaly ranked below G, 
     //so although some NR films are equivilent to this query, any film with an unrated version ex: American Pie Unrated will show
-    var rating = $('#rating').val().trim();
+    var rating = "R"//$('#rating').val().trim();
     //query URL for TMDB - used this DM over OMDB as it has a lot more search parameters
     var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification.lte=" + rating +"&include_adult=false&include_video=false&page=1&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
     $.ajax({
@@ -35,11 +40,6 @@ $('#results').on('click', function showMovies(){
         $('#container').append(imgDiv)
         //creates access code that users will query
         var genKey = makeId()
-        //assigns that access code to the name of the branch in firebase
-        database.ref(genKey).push({
-            "Access Code": genKey,
-            "Movies": {}
-        })
         //for loop to create 5 posters and place them on page
         for (var i=0;i<5; i++){
             //varible for poster url
@@ -56,13 +56,12 @@ $('#results').on('click', function showMovies(){
             $(imgDiv).append(poster)
             //pushes the new data up to firebase as it is gen
             //Exception - will need to modify to allow user to manually add items in
-            database.ref(genKey + '/Movies').push({
-                ["Movie" + i]:{
+            database.ref(genKey).child('Movie '+i).set({
                     "Title": movieTitle,
                     "Poster": posterURL
-                }
-            })
+                })
         }
+    })
         //creates button that will submit results and trigger firebase call
         var newBtn = $('<button class="btn text-center" type="submit">')
         $(newBtn).text("Confirm")
@@ -70,9 +69,8 @@ $('#results').on('click', function showMovies(){
         $('#container').append(newBtn)
         console.log(response)
         console.log(queryURL)
-    })
 
-})
+} //)
 
 //generates random 5-character user ID - will need to switch to a better system
 //but works for now since after survey is done, data is wiped from firebase
@@ -87,3 +85,4 @@ function makeId() {
   }
 
 
+$(document).on('click', showMovies)
