@@ -13,8 +13,7 @@ var config = {
   var genKey;
 
   //function that populates movies after genre and rating are submited on prev page
-//$('#results').on('click', 
-function showMovies(){
+$('#results').on('click', function showMovies(){
     //event.preventDefault();
     //removes html from container that will house new data on this page
     $('#container').empty()
@@ -24,10 +23,10 @@ function showMovies(){
     var currentDate = moment().format("YYYY-MM-DD");
     console.log(currentDate)
     //API uses ID's to identify genres instead of string ex: 10402 = Mystery
-    var genreID = "10402" //$('#genre').val().trim();
+    var genreID = $('#genre').val().trim();
     //query is set to display rating less or equal to parameter so if pg-13 selected R or NC-17 will not populate. EXCEPTION - NR is technicaly ranked below G, 
     //so although some NR films are equivilent to this query, any film with an unrated version ex: American Pie Unrated will show
-    var rating = "R"//$('#rating').val().trim();
+    var rating = $('#rating').val().trim();
     //query URL for TMDB - used this DM over OMDB as it has a lot more search parameters
     var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification.lte=" + rating +"&include_adult=false&include_video=false&page=1&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
     $.ajax({
@@ -70,7 +69,7 @@ function showMovies(){
         console.log(response)
         console.log(queryURL)
 
-} //)
+})
 
 //generates random 5-character user ID - will need to switch to a better system
 //but works for now since after survey is done, data is wiped from firebase
@@ -84,5 +83,3 @@ function makeId() {
     return text;
   }
 
-
-$(document).on('click', showMovies)
