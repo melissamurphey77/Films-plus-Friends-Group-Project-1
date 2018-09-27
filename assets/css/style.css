@@ -1,0 +1,40 @@
+
+
+form {
+    padding: 20px 40px 40px 40px;
+    text-align: center;
+    display: block;
+   
+}
+
+img {
+    width: 75%;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 20px 0px 30px 0px;
+}
+
+.label {
+    text-align: left;
+    font-size: 18px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-bottom: 3px;
+}
+
+#footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   text-align: center;
+   width: 100%;
+}
+
+#getStartedBtn {
+    margin-top: 30%;
+}
+
+
+
