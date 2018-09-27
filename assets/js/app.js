@@ -106,7 +106,7 @@ getStartedBtn.text("Get Started!");
 getStartedBtn.appendTo("#container");
 
 $("#getStartedBtn").on("click", function () {
-    //!!!!! Still need steps to hide/clear the landing page !!!!!
+    //Steps to hide/clear the landing page and run makeSearchForm
     $("#container").empty();
     $("#footer").hide();
     makeSearchForm();
@@ -120,7 +120,7 @@ function makeSearchForm() {
 
   //Generate the Name Field
   var nameLabel = $("<label>");
-
+      nameLabel.attr("class", "label");
       nameLabel.attr("for", "nameField");
       nameLabel.text("Name: ");
 
@@ -128,10 +128,11 @@ function makeSearchForm() {
 
       nameField.attr("type", "text");
       nameField.attr("id", "nameField");
+      nameField.attr("class", "form-control");
 
   //Generate the Email Field
   var emailLabel = $("<label>");
-
+      emailLabel.attr("class", "label");
       emailLabel.attr("for", "emailField");
       emailLabel.text("Email: ");
 
@@ -139,10 +140,12 @@ function makeSearchForm() {
 
       emailField.attr("type", "email");
       emailField.attr("id", "emailField");
+      emailField.attr("class", "form-control");
 
 
   //Generate the Ratings Checkboxes
   var ratingsLabel = $("<Label>");
+      ratingsLabel.attr("class", "label");
       ratingsLabel.attr("for","ratingsGroup");
       ratingsLabel.text("Ratings: ");
 
@@ -160,17 +163,18 @@ function makeSearchForm() {
 
       ratingsCheck.appendTo(ratingsGroup);
       ratingsGroup.append(ratingsText)
-      ratingsGroup.append("<br>");
+      //ratingsGroup.append("<br>");
       };
 
   //Generate the Genres Dropdown List
   var genresLabel = $("<label>");
-      
+      genresLabel.attr("class", "label");
       genresLabel.attr("for", "genresDropdown");
       genresLabel.text("Genre: ");
 
   var genresDropdown = $("<select>");
       genresDropdown.attr("id", "genresDropdown");
+      genresDropdown.attr("class", "form-control");
 
       for (var i = 0; i < genres.length; i++) {
       
@@ -277,8 +281,9 @@ $('#results').on('click', function showMovies(){
       })
       //creates button that will submit results and trigger firebase call
       var newBtn = $('<button class="btn text-center" type="submit">')
-      $(newBtn).text("Confirm")
-      $(newBtn).attr('id', "pushSelection")
+      newBtn.text("Confirm")
+      newBtn.attr('id', "pushSelection")
+      newBtn.attr("class", "btn btn-primary newBtn");
       $('#movieDisplay').append(newBtn)
     })
   })
