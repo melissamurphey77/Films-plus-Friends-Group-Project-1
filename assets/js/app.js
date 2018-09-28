@@ -270,7 +270,7 @@ $('#results').on('click', function showMovies(){
           $(imgDiv).append(poster)
           //pushes the new data up to firebase as it is gen
           //Exception - will need to modify to allow user to manually add items in
-          database.ref(genKey+'/Movies').child('Movie '+i).set({
+          database.ref(genKey+'/Movies').child('Movie_'+i).set({
                   "Title": movieTitle,
                   "Poster": posterURL
               })
@@ -348,9 +348,37 @@ function makeId() {
   
     return text;
   }
+
   $('#accessCodeBtn').on('click', function(){
     var accessCode = $('#accessCode').val().trim()
     console.log(accessCode)
-    database.ref()
-  })
+    database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
+      var returnArr = [];
+      snapshot.forEach(function(childSnapshot) {
+          var item = childSnapshot.val();
+          item.key = childSnapshot.key;
   
+          returnArr.push(item);
+      });
+      $('#header, #container, #footer, #accessCodeDiv').hide()
+      var votingDiv = $('#votingDisplay')
+      votingDiv.append('<div>')
+      votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
+      votingDiv.append('<br>')
+      var moviePosterArr = [returnArr[1].Movie_1.Poster, returnArr[1].Movie_2.Poster, returnArr[1].Movie_3.Poster, returnArr[1].Movie_4.Poster]
+      var movieNameArr = [returnArr[1].Movie_1.Title, returnArr[1].Movie_2.Title, returnArr[1].Movie_3.Title, returnArr[1].Movie_4.Title]
+      for (i=0; i<4; i++) {
+        var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).attr('data-name', movieNameArr[i]).addClass('w-25 p-2 movieVote')
+        votingDiv.append(votingPoster)
+      }
+      votingDiv.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
+      $('.movieVote').on('click', function(){
+        $(this).addClass('userVote')
+        //create function to identify what movie is selected
+        //push that data up to firebase to add onto the vote tally
+      })
+    });
+    //create firebase query that will reference data upon click of #submitVote
+    //if total number of votes == number of emails then trigger end of session
+    //at end of session send results email and purge data from DB
+  })
