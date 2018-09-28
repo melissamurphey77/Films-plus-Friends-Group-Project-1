@@ -2,11 +2,7 @@
 body {
     background-color: #2991e2;
     font-family: 'Montserrat', sans-serif;
-    
-
 }
-
-
 
 form {
     padding: 20px 40px 40px 40px;
@@ -30,6 +26,12 @@ input {
     padding-right: 10px;
     margin-top: 20px;
     margin-bottom: 3px;
+}
+
+.titleText {
+    font-family: 'Montserrat', sans-serif;
+    color: #f9f9f9;
+    font-size: 25px;
 }
 
 #footer {
@@ -74,12 +76,25 @@ input {
     border-width: 2px;
     width: 30%;
     font-size: 25px;
-
 }
 
 .btn-primary:hover{
     background-color: #f7811e;
 }
+
+.btn-search {
+    border-color: #f7811e;
+    background-color: #2991e2;
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    border-width: 2px;
+    font-size: 25px;
+}
+
+.btn-search:hover{
+    background-color: #f7811e;
+}
+
 
 
 /* CSS styling for scrolling search bar */
