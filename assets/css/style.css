@@ -1,4 +1,12 @@
 
+body {
+    background-color: #2991e2;
+    font-family: 'Montserrat', sans-serif;
+    
+
+}
+
+
 
 form {
     padding: 20px 40px 40px 40px;
@@ -51,7 +59,23 @@ input {
 }
 
 #getStartedBtn {
-    margin-top: 30%;
+    margin-top: 50px;
+    border-color: #f7811e;
+    border-width: 3px;
+    background-color: #2991e2;
+    color: white;
+    font-size: 25px;
+    width: 50%;
+
+}
+
+.btn-primary {
+    border-color: #f7811e;
+    background-color: #2991e2;
+    color: white;
+    font-family: 'Fredoka One', cursive;
+
+
 }
 
 
