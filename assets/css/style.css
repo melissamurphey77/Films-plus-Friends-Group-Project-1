@@ -60,10 +60,7 @@ input {
 
 #getStartedBtn {
     margin-top: 50px;
-    border-color: #f7811e;
     border-width: 3px;
-    background-color: #2991e2;
-    color: white;
     font-size: 25px;
     width: 50%;
 
@@ -74,8 +71,14 @@ input {
     background-color: #2991e2;
     color: white;
     font-family: 'Fredoka One', cursive;
+    border-width: 2px;
+    width: 30%;
+    font-size: 25px;
 
+}
 
+.btn-primary:hover{
+    background-color: #f7811e;
 }
 
 
