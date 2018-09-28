@@ -100,7 +100,7 @@ var getStartedBtn = $("<button>");
 
 getStartedBtn.attr("id", "getStartedBtn");
 getStartedBtn.attr("type", "submit");
-getStartedBtn.attr("class", "btn btn-primary submitBtn");
+getStartedBtn.attr("class", "btn btn-primary");
 getStartedBtn.text("Get Started!");
 
 getStartedBtn.appendTo("#container");
@@ -192,7 +192,7 @@ function makeSearchForm() {
 
   searchSubmitBtn.attr("id", "results");
   searchSubmitBtn.attr("type", "submit");
-  searchSubmitBtn.attr("class", "btn btn-primary submitBtn");
+  searchSubmitBtn.attr("class", "btn btn-primary");
   searchSubmitBtn.text("Submit");
 
 
@@ -210,7 +210,7 @@ function makeSearchForm() {
   searchForm.appendTo("#container");
   searchSubmitBtn.appendTo("#container");
 
-  var selectedGenre = $("#genresDropdown option:selected").attr("id")
+  var selectedGenre = $("#genresDropdown option:selected").attr("id");
 
 };
 $('#results').on('click', function showMovies(){
@@ -280,10 +280,10 @@ $('#results').on('click', function showMovies(){
         "Name": name
       })
       //creates button that will submit results and trigger firebase call
-      var newBtn = $('<button class="btn text-center" type="submit">')
+      var newBtn = $('<button type="submit">')
       newBtn.text("Confirm")
       newBtn.attr('id', "pushSelection")
-      newBtn.attr("class", "btn btn-primary newBtn");
+      newBtn.attr("class", "btn btn-primary");
       $('#movieDisplay').append(newBtn)
     })
   })
@@ -300,3 +300,50 @@ function makeId() {
   
     return text;
   }
+
+  $("#pushSelection").on("click", function() {
+
+    inviationForm();
+
+
+    function inviationForm() {
+
+      var inviteForm = $("<form>");
+      inviteForm.attr("id", "inviteForm");
+
+      //Generate Email input for inviting friends
+      var friendDiv = $("<div>");
+      friendDiv.attr("class", "form-group");
+
+      var friendLabel = $("<label>");
+      friendLabel.attr("class", "label");
+      friendLabel.attr("for", "friendEmail");
+      friendLabel.text("Friends Emails: ");
+
+      var friendEmail = $("<input>");
+      friendEmail.attr("type", "email");
+      friendEmail.attr("id", "friendEmail");
+      friendEmail.attr("class", "form-control");
+
+      friendDiv.append(friendLabel);
+      friendDiv.append(friendEmail);
+
+      friendDiv.appendTo(inviteForm);
+
+      //Message area
+      
+      
+      //Submit Btn for Sending the Invites
+      var sendInviteBtn = $("<button>");
+
+      sendInviteBtn.attr("id", "sendInviteBtn");
+      sendInviteBtn.attr("class", "btn btn-primary");
+      sendInviteBtn.attr("type", "submit");
+      sendInviteBtn.text("Send");
+      sendInviteBtn.appendTo(inviteForm);
+
+      inviteForm.appendTo("#container");
+
+    };
+
+  });
