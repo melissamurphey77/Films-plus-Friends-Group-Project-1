@@ -11,14 +11,19 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
 </head>
-
-<body class="container text-center">
-
-    <header id="header"></header>
-    
-    <div id="container"></div>
-    <div id="movieDisplay"></div>
-
+<body class="text-center">
+        <div id="accessCodeDiv" class="input-group input-group-sm mb-3 float-right col-1">
+            <input id="accessCode" type="text" class="form-control" placeholder="Access Code">
+            <div class="input-group-append">
+                  <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-search"></i></span>
+            </div>
+        </div>
+    <header id="header">
+    </header>
+    <div class="container">
+        <div id="container"></div>
+        <div id="movieDisplay"></div>
+    </div>
     <footer id="footer">
         <h3>More Information</h3>
         <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
