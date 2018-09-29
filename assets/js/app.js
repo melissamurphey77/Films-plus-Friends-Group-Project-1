@@ -436,7 +436,7 @@ function makeId() {
             var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
             messageDiv.append(animeDiv)
             $('#messageDisplay').append(messageDiv)
-            //setTimeout(function(){
+            setTimeout(function(){
               checkVotes()
               function checkVotes(){
                 //query firebase for votenumber of every movie
@@ -496,8 +496,8 @@ function makeId() {
                   //database.ref(accessCode).remove()
                 }
               }
-              //document.location.reload()
-            //}, 10000)
+              document.location.reload()
+            }, 10000)
           } else {
             alert("Please make a selection before proceeding")
             //will replace this with Modal, but looks OK for now
