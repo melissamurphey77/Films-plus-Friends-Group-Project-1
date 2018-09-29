@@ -255,7 +255,7 @@ $('#results').on('click', function showMovies(){
       //creates access code that users will query
       var genKey = makeId()
       //for loop to create 5 posters and place them on page
-      for (var i=1;i<5; i++){
+      for (var i=0;i<4; i++){
           //varible for poster url
           var posterURL = "https://image.tmdb.org/t/p/w500" + response.results[i].poster_path
           //gets poster img based on URL
@@ -272,12 +272,15 @@ $('#results').on('click', function showMovies(){
           //Exception - will need to modify to allow user to manually add items in
           database.ref(genKey+'/Movies').child('Movie_'+i).set({
                   "Title": movieTitle,
-                  "Poster": posterURL
+                  "Poster": posterURL,
+                  "Vote_Count": 0
               })
       }
+      database.ref(genKey).child('Attendees').set({
+        "Host": email,
+      })
       database.ref(genKey).child('Host').set({
-        "Email": email,
-        "Name": name
+        "Host Name": name,
       })
       //creates button that will submit results and trigger firebase call
       var newBtn = $('<button type="submit">')
@@ -303,14 +306,14 @@ $('#results').on('click', function showMovies(){
           friendLabel.attr("class", "label");
           friendLabel.attr("for", "friendEmail");
           friendLabel.text("Friends Emails: ");
-    
-          var friendEmail = $("<input>");
-          friendEmail.attr("type", "email");
-          friendEmail.attr("id", "friendEmail");
-          friendEmail.attr("class", "form-control");
-    
           friendDiv.append(friendLabel);
-          friendDiv.append(friendEmail);
+          for (i=1; i<5; i++) {
+            var friendEmail = $("<input>");
+            friendEmail.attr("type", "email");
+            friendEmail.attr("id", `friendEmail_${i}`);
+            friendEmail.attr("class", "form-control m-4");
+            friendDiv.append(friendEmail);
+          }
     
           friendDiv.appendTo(inviteForm);
     
@@ -327,7 +330,20 @@ $('#results').on('click', function showMovies(){
           sendInviteBtn.appendTo(inviteForm);
     
           inviteForm.appendTo("#emailDisplay");
-    
+          $('#sendInviteBtn').on('click', function(){
+            event.preventDefault()
+            var email_1 = $('#friendEmail_1').val().trim()
+            var email_2 = $('#friendEmail_2').val().trim()
+            var email_3 = $('#friendEmail_3').val().trim()
+            var email_4 = $('#friendEmail_4').val().trim()
+            database.ref(genKey).child('Attendees').update({
+              "Guest_1": email_1,
+              "Guest_2": email_2,
+              "Guest_3": email_3,
+              "Guest_4": email_4
+            })
+            document.location.reload();
+          })
         };
     
       });
@@ -365,20 +381,100 @@ function makeId() {
       votingDiv.append('<div>')
       votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
       votingDiv.append('<br>')
-      var moviePosterArr = [returnArr[1].Movie_1.Poster, returnArr[1].Movie_2.Poster, returnArr[1].Movie_3.Poster, returnArr[1].Movie_4.Poster]
-      var movieNameArr = [returnArr[1].Movie_1.Title, returnArr[1].Movie_2.Title, returnArr[1].Movie_3.Title, returnArr[1].Movie_4.Title]
+      var moviePosterArr = [returnArr[2].Movie_0.Poster, returnArr[2].Movie_1.Poster, returnArr[2].Movie_2.Poster, returnArr[2].Movie_3.Poster]
+      var movieNameArr = [returnArr[2].Movie_0.Title, returnArr[2].Movie_1.Title, returnArr[2].Movie_2.Title, returnArr[2].Movie_3.Title]
       for (i=0; i<4; i++) {
-        var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).attr('data-name', movieNameArr[i]).addClass('w-25 p-2 movieVote')
+        var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).addClass('w-25 p-2 movieImg').attr('id', movieNameArr[i])
         votingDiv.append(votingPoster)
       }
       votingDiv.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
-      $('.movieVote').on('click', function(){
-        $(this).addClass('userVote')
-        //create function to identify what movie is selected
-        //push that data up to firebase to add onto the vote tally
+      $('.movieImg').on('click', function(){
+        $('.movieImg').each(function(){
+          $('.movieImg').removeClass('selected')
+        })
+        $(this).addClass('selected')
+        $('#submitVote').on('click', function(){
+          event.preventDefault()
+          if ($('.movieImg').hasClass('selected')) {
+            var userVote = $('.selected').attr('data')
+            console.log(userVote)
+            database.ref(accessCode + '/Movies/' + userVote).child('Vote_Count').once('value').then(function(childSnapshot) {
+              var voteNum = childSnapshot.val()
+              votePlus = parseInt(voteNum) + 1
+                console.log(votePlus)
+              database.ref(accessCode + '/Movies').child(userVote).update({
+                "Vote_Count": votePlus
+              })
+            })
+            $('#votingDisplay').hide()
+            var animeDiv = $('<div>').addClass('loadingBar')
+            var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
+            messageDiv.append(animeDiv)
+            $('#messageDisplay').append(messageDiv)
+            setTimeout(function(){
+              checkVotes()
+              function checkVotes(){
+                //query firebase for votenumber of every movie
+                var queryArr = [];
+                database.ref(accessCode + '/Movies').on('value', function snapshotToArray(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                      var item = childSnapshot.val();
+                      item.key = childSnapshot.key;
+              
+                      queryArr.push(item);
+                  });
+                })
+                
+                var voteCountArr = [queryArr[0].Vote_Count, queryArr[1].Vote_Count, queryArr[2].Vote_Count, queryArr[3].Vote_Count];
+                var movieNumArr = [queryArr[0].key, queryArr[1].key, queryArr[2].key, queryArr[3].key];
+                var emailArr = [];
+                console.log(emailArr)
+                database.ref(accessCode + '/Attendees').on('value', function snapshotToArray(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                      var item = childSnapshot.val();
+                      item.key = childSnapshot.key;
+              
+                      emailArr.push(item);
+                  });
+                })
+                var totalVotes = voteCountArr.reduce(add, 0);
+                  function add(a, b) {
+                    return a + b;
+                  }
+                //sort out movies based on vote count
+                console.log(queryArr)
+                console.log(movieNumArr)
+                console.log(voteCountArr)
+                console.log(totalVotes)
+                var emailCount = [emailArr[0], emailArr[1], emailArr[2], emailArr[3], emailArr[4]]
+                //if total votes equals ammount of emails submitted - fire email
+                if(totalVotes = emailCount.length){
+                  //Send email with results
+                  var highestVote = Math.max.apply(null, voteCountArr)
+                  var winnerPosition = voteCountArr.indexOf(highestVote)
+                  var winner = movieNumArr[winnerPosition]
+                  console.log(highestVote)
+                  console.log(winnerPosition)
+                  console.log(winner)
+                  database.ref(accessCode + '/Movies/' + winner).once('value', function(snapshot){
+                    var winningPoster = snapshot.val().Poster
+                    var winningTitle = snapshot.val().Title
+                    console.log(winningPoster)
+                    console.log(winningTitle)
+                  })
+                  //send data via email with saved poster URL and title
+                  //database.ref(accessCode).remove()
+                }
+              }
+              //document.location.reload()
+            }, 10000)
+          } else {
+            alert("Please make a selection before proceeding")
+            //will replace this with Modal, but looks OK for now
+          }
+          
+        })
       })
     });
-    //create firebase query that will reference data upon click of #submitVote
-    //if total number of votes == number of emails then trigger end of session
-    //at end of session send results email and purge data from DB
   })
+
