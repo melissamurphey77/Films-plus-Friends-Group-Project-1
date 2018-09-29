@@ -238,33 +238,53 @@ $('#results').on('click', function showMovies(){
   var currentDate = moment().format("YYYY-MM-DD");
   console.log(currentDate)
   //API uses ID's to identify genres instead of string ex: 10402 = Mystery
-
-  var genreID = $("#genresDropdown option:selected").attr("id");
-
+  var pageNum = Math.floor(Math.random()*10 + 1)
+  var genreID = $("#genresDropdown option:selected").attr("id")
   //query is set to display rating less or equal to parameter so if pg-13 selected R or NC-17 will not populate. EXCEPTION - NR is technicaly ranked below G, 
   //so although some NR films are equivilent to this query, any film with an unrated version ex: American Pie Unrated will show
   var rating = $("form input:checked").val();
   //query URL for TMDB - used this DM over OMDB as it has a lot more search parameters
-  var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification.lte=" + rating +"&include_adult=false&include_video=false&page=1&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
+  var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification.lte=" + rating +"&include_adult=false&include_video=false&page="+ pageNum +"&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
   $.ajax({
       //https://www.themoviedb.org/documentation/api
       url: queryURL,
       method: "GET"
   }).then(function(response) {
     console.log(queryURL)
+      tmdbArr = []
+      for (i=0; i<20; i++){
+        tmdbArr.push(response.results[i])
+      }
+      console.log(tmdbArr)
+
       //Div to house all images that is linked to output in HTML
       var imgDiv = $('<div>').attr('id', "imgDiv")
       $('#movieDisplay').append(imgDiv)
       //creates access code that users will query
       var genKey = makeId()
+      function shuffle(tmdbArr) {
+        var currentIndex = tmdbArr.length, temporaryValue, randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = tmdbArr[currentIndex];
+          tmdbArr[currentIndex] = tmdbArr[randomIndex];
+          tmdbArr[randomIndex] = temporaryValue;
+        }
+        return tmdbArr;
+      }
       //for loop to create 5 posters and place them on page
       for (var i=0;i<4; i++){
+          shuffle(tmdbArr)
           //varible for poster url
-          var posterURL = "https://image.tmdb.org/t/p/w500" + response.results[i].poster_path
+          var posterURL = "https://image.tmdb.org/t/p/w500" + tmdbArr[i].poster_path
           //gets poster img based on URL
           var poster = $('<img>').attr('src', posterURL).addClass('w-50 p-4')
           //variable to house movie title
-          var movieTitle = response.results[i].title
+          var movieTitle = tmdbArr[i].title
           //ads ID for styling and data for pushing up to firebase
           $(poster).attr('id', "poster").attr('data', movieTitle)
           //stores URL in data in addition to SRC
@@ -278,6 +298,7 @@ $('#results').on('click', function showMovies(){
                   "Poster": posterURL,
                   "Vote_Count": 0
               })
+          tmdbArr.splice(i, 1)
       }
       database.ref(genKey).child('Attendees').set({
         "Host": email,
@@ -415,7 +436,7 @@ function makeId() {
             var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
             messageDiv.append(animeDiv)
             $('#messageDisplay').append(messageDiv)
-            setTimeout(function(){
+            //setTimeout(function(){
               checkVotes()
               function checkVotes(){
                 //query firebase for votenumber of every movie
@@ -450,9 +471,14 @@ function makeId() {
                 console.log(movieNumArr)
                 console.log(voteCountArr)
                 console.log(totalVotes)
-                var emailCount = [emailArr[0], emailArr[1], emailArr[2], emailArr[3], emailArr[4]]
+                //var emailCount = [emailArr[0], emailArr[1], emailArr[2], emailArr[3], emailArr[4]]
+                var emailCount = []
+                for (i=0; i<emailArr.length;i++){
+                  emailCount.push(emailArr[i])
+                }
+                console.log(emailCount.length)
                 //if total votes equals ammount of emails submitted - fire email
-                if(totalVotes = emailCount.length){
+                if(totalVotes === emailCount.length){
                   //Send email with results
                   var highestVote = Math.max.apply(null, voteCountArr)
                   var winnerPosition = voteCountArr.indexOf(highestVote)
@@ -470,8 +496,8 @@ function makeId() {
                   //database.ref(accessCode).remove()
                 }
               }
-              document.location.reload()
-            }, 10000)
+              //document.location.reload()
+            //}, 10000)
           } else {
             alert("Please make a selection before proceeding")
             //will replace this with Modal, but looks OK for now
@@ -481,4 +507,3 @@ function makeId() {
       })
     });
   })
-
