@@ -95,7 +95,7 @@ var genres = [
       "name": "Western"
     }
   ];
-
+$('.navbar').hide()
 var getStartedBtn = $("<button>");
 
 getStartedBtn.attr("id", "getStartedBtn");
@@ -108,6 +108,7 @@ getStartedBtn.appendTo("#container");
 $("#getStartedBtn").on("click", function () {
     $('#accessCodeDiv').hide()
     $('#header').hide()
+    $('.navbar').show()
     //Steps to hide/clear the landing page and run makeSearchForm
     $("#container").empty();
     $("#footer").hide();
@@ -379,6 +380,7 @@ function makeId() {
           returnArr.push(item);
       });
       $('#header, #container, #footer, #accessCodeDiv').hide()
+      $('.navbar').show()
       var votingDiv = $('#votingDisplay')
       votingDiv.append('<div>')
       votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
