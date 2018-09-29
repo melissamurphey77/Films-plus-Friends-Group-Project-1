@@ -106,6 +106,8 @@ getStartedBtn.text("Get Started!");
 getStartedBtn.appendTo("#container");
 
 $("#getStartedBtn").on("click", function () {
+    $('#accessCodeDiv').hide()
+    $('#header').hide()
     //Steps to hide/clear the landing page and run makeSearchForm
     $("#container").empty();
     $("#footer").hide();
