@@ -466,7 +466,7 @@ function makeId() {
                   //database.ref(accessCode).remove()
                 }
               }
-              //document.location.reload()
+              document.location.reload()
             }, 10000)
           } else {
             alert("Please make a selection before proceeding")
