@@ -282,7 +282,7 @@ $('#results').on('click', function showMovies(){
           //varible for poster url
           var posterURL = "https://image.tmdb.org/t/p/w500" + tmdbArr[i].poster_path
           //gets poster img based on URL
-          var poster = $('<img>').attr('src', posterURL).addClass('w-50 p-4')
+          var poster = $('<img>').attr('src', posterURL).addClass('w-25 p-2')
           //variable to house movie title
           var movieTitle = tmdbArr[i].title
           //ads ID for styling and data for pushing up to firebase
