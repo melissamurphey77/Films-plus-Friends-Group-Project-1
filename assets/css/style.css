@@ -98,6 +98,11 @@ input {
     background-color: #f7811e;
 }
 
+.movieImg:hover{ 
+    position: relative; 
+    top: -10px;
+} 
+
 @media (max-width: 991px) {
     .navbar-header {
         float: none;
