@@ -392,6 +392,7 @@ function makeId() {
   $('#accessCodeBtn').on('click', function(){
     var accessCode = $('#accessCode').val().trim()
     console.log(accessCode)
+
     database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
       var returnArr = [];
       snapshot.forEach(function(childSnapshot) {
@@ -436,7 +437,6 @@ function makeId() {
             var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
             messageDiv.append(animeDiv)
             $('#messageDisplay').append(messageDiv)
-            //setTimeout(function(){
               checkVotes()
               function checkVotes(){
                 //query firebase for votenumber of every movie
@@ -476,9 +476,12 @@ function makeId() {
                 for (i=0; i<emailArr.length;i++){
                   emailCount.push(emailArr[i])
                 }
+                
+                emailCount = emailCount.filter(v=>v!='')
                 console.log(emailCount.length)
+                console.log(totalVotes)
                 //if total votes equals ammount of emails submitted - fire email
-                if(totalVotes === emailCount.length){
+                if(totalVotes === emailCount.length -1){
                   //Send email with results
                   var highestVote = Math.max.apply(null, voteCountArr)
                   var winnerPosition = voteCountArr.indexOf(highestVote)
@@ -491,13 +494,16 @@ function makeId() {
                     var winningTitle = snapshot.val().Title
                     console.log(winningPoster)
                     console.log(winningTitle)
+                    //replace with modal
+                    alert("All the votes are in, please check your email for the results!")
                   })
                   //send data via email with saved poster URL and title
-                  //database.ref(accessCode).remove()
+                  //database.ref(accessCode).push().set().remove()
+                } else {
+                  //replace with modal
+                  alert("A few more friends still need to vote, keep an eye on your email for the results")
                 }
               }
-              //document.location.reload()
-            //}, 10000)
           } else {
             alert("Please make a selection before proceeding")
             //will replace this with Modal, but looks OK for now
@@ -505,5 +511,5 @@ function makeId() {
           
         })
       })
-    });
+    })
   })
