@@ -276,30 +276,96 @@ $('#results').on('click', function showMovies(){
         }
         return tmdbArr;
       }
+      var newBtn = $('<button type="submit">')
+      newBtn.text("Confirm")
+      newBtn.attr('id', "pushSelection")
+      newBtn.attr("class", "btn btn-primary");
+      $('#movieDisplay').append(newBtn)
+      var deleteMovie = $('<button type="submit">')
+      deleteMovie.text("Swap out a movie?")
+      deleteMovie.attr('id', "deleteMovie")
+      deleteMovie.attr("class", "btn btn-primary")
+      $('#movieDisplay').append(deleteMovie)
+      var movieForm = $('<div id="addMovie" class="input-group input-group-sm mb-3 float-right w-25 p-4 col-2">')
+      var movieInput = $('<input id="movieSearch" type="text" class="form-control" placeholder="Search a movie by title">')
+      var movieInputGroup = $('<div class="input-group-append">')
+      var addMovie = $('<button id="movieSearchSubmit" class="btn btn-primary" type="submit"><i class="fas fa-search"></i>')
+      $(movieForm).append(movieInput)
+      $(movieInputGroup).append(addMovie)
+      $(movieForm).append(movieInputGroup)
+      $('.searchBar').append(movieForm)
+      $('#addMovie').hide()
+      var currentMovieArr = [];
+      var movieCount = 0
       //for loop to create 5 posters and place them on page
-      for (var i=0;i<4; i++){
+      for (var i=0;i<5; i++){
           shuffle(tmdbArr)
           //varible for poster url
           var posterURL = "https://image.tmdb.org/t/p/w500" + tmdbArr[i].poster_path
           //gets poster img based on URL
-          var poster = $('<img>').attr('src', posterURL).addClass('w-25 p-2')
+          var poster = $('<img>').attr('src', posterURL).addClass('w-75 position-relative')
+          //variable to house div for image
+          var posterDiv = $('<div>').addClass('posterDiv m-0 p-4')
           //variable to house movie title
           var movieTitle = tmdbArr[i].title
           //ads ID for styling and data for pushing up to firebase
           $(poster).attr('id', "poster").attr('data', movieTitle)
           //stores URL in data in addition to SRC
           $(poster).attr('data-img', posterURL)
-          //links poster to imgDiv created above
-          $(imgDiv).append(poster)
+          $(poster).attr('data-name', `Movie_${i}`)
+          //links poster to posterDIv
+          $(posterDiv).append(poster)
+          //links posterDiv to imgDiv created above
+          $(imgDiv).append(posterDiv)
           //pushes the new data up to firebase as it is gen
           //Exception - will need to modify to allow user to manually add items in
-          database.ref(genKey+'/Movies').child('Movie_'+i).set({
-                  "Title": movieTitle,
-                  "Poster": posterURL,
-                  "Vote_Count": 0
-              })
           tmdbArr.splice(i, 1)
-      }
+          var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" data-name="Movie_${i}"class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
+          $(posterDiv).append(deleteBtn)
+          $('.deleteBtn').hide()
+          movieCount++
+        }
+        console.log(movieCount)
+      $('#deleteMovie').on('click', function(){
+        $('.deleteBtn').show()
+        $('#deleteMovie').hide()
+        $('.deleteBtn').on('click', function() {
+          var titleDel = $(this).attr('data')
+          var posterDel = $(this).attr('data-img')
+          var itemDel = $(this).attr('data-name')
+          console.log(titleDel, posterDel, itemDel)
+          $(this).closest('div').remove()
+          movieCount--
+          console.log(movieCount)
+          if(movieCount<5){
+            $('#addMovie').show()
+          }
+        })
+        $('#movieSearchSubmit').on('click', function(){
+          var keyword = $('#movieSearch').val().trim()
+          var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=false"
+          $.ajax({
+            //https://www.themoviedb.org/documentation/api
+            url: queryURL,
+            method: "GET"
+          }).then(function(response) {
+            console.log(queryURL)
+            //query response same way as initial so can do a for each function to assign values, 
+            //might do a for look to give movie_i as well
+            //dropdown menu shows movie title + year
+            //dropdown item on click creates new div on page and adds 1 to movie count
+          })
+        })
+      })
+      //turns into a for each function
+      //god this is complicated
+      /*for(i=0; i<currentMovieArr.length; i++) {
+        database.ref(genKey+'/Movies').child('Movie_'+i).set({
+          "Title": movieTitle,
+          "Poster": posterURL,
+          "Vote_Count": 0
+        })
+      }*/
       database.ref(genKey).child('Attendees').set({
         "Host": email,
       })
@@ -307,11 +373,6 @@ $('#results').on('click', function showMovies(){
         "Host Name": name,
       })
       //creates button that will submit results and trigger firebase call
-      var newBtn = $('<button type="submit">')
-      newBtn.text("Confirm")
-      newBtn.attr('id', "pushSelection")
-      newBtn.attr("class", "btn btn-primary");
-      $('#movieDisplay').append(newBtn)
       $("#pushSelection").on("click", function() {
         $('#movieDisplay').hide()
         inviationForm();
@@ -374,8 +435,6 @@ $('#results').on('click', function showMovies(){
     })
     
   })
-  
-});
 
 //generates random 5-character user ID - will need to switch to a better system
 //but works for now since after survey is done, data is wiped from firebase
@@ -509,6 +568,7 @@ function makeId() {
             //will replace this with Modal, but looks OK for now
           }
           
+          })
         })
       })
     })

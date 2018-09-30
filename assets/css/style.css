@@ -103,6 +103,34 @@ input {
     top: -10px;
 } 
 
+.posterDiv {
+    position: relative;
+    float: left;
+    width: 100%;
+    max-width: 400px;
+}
+
+.posterDiv img {
+    width: 100%;
+    height: auto;
+}
+
+.posterDiv .deleteBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #f7811e;
+    text-align: center;
+}
+
 @media (max-width: 991px) {
     .navbar-header {
         float: none;
