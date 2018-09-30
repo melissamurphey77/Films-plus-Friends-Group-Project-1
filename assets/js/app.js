@@ -287,15 +287,14 @@ $('#results').on('click', function showMovies(){
       deleteMovie.attr("class", "btn btn-primary")
       $('#movieDisplay').append(deleteMovie)
       var movieForm = $('<div id="addMovie" class="input-group input-group-sm mb-3 float-right w-25 p-4 col-2">')
-      var movieInput = $('<input id="movieSearch" type="text" class="form-control" placeholder="Search a movie by title">')
+      var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
       var movieInputGroup = $('<div class="input-group-append">')
-      var addMovie = $('<button id="movieSearchSubmit" class="btn btn-primary" type="submit"><i class="fas fa-search"></i>')
+      var addMovie = $('<button id="movieSearchSubmit" class="btn btn-primary px-3" type="submit"><i class="fas fa-search"></i>')
       $(movieForm).append(movieInput)
       $(movieInputGroup).append(addMovie)
       $(movieForm).append(movieInputGroup)
       $('.searchBar').append(movieForm)
       $('#addMovie').hide()
-      var currentMovieArr = [];
       var movieCount = 0
       //for loop to create 5 posters and place them on page
       for (var i=0;i<5; i++){
@@ -312,7 +311,6 @@ $('#results').on('click', function showMovies(){
           $(poster).attr('id', "poster").attr('data', movieTitle)
           //stores URL in data in addition to SRC
           $(poster).attr('data-img', posterURL)
-          $(poster).attr('data-name', `Movie_${i}`)
           //links poster to posterDIv
           $(posterDiv).append(poster)
           //links posterDiv to imgDiv created above
@@ -320,7 +318,7 @@ $('#results').on('click', function showMovies(){
           //pushes the new data up to firebase as it is gen
           //Exception - will need to modify to allow user to manually add items in
           tmdbArr.splice(i, 1)
-          var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" data-name="Movie_${i}"class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
+          var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
           $(posterDiv).append(deleteBtn)
           $('.deleteBtn').hide()
           movieCount++
@@ -329,11 +327,10 @@ $('#results').on('click', function showMovies(){
       $('#deleteMovie').on('click', function(){
         $('.deleteBtn').show()
         $('#deleteMovie').hide()
-        $('.deleteBtn').on('click', function() {
+        $('.deleteBtn').on('click', function deleteBtn() {
           var titleDel = $(this).attr('data')
           var posterDel = $(this).attr('data-img')
-          var itemDel = $(this).attr('data-name')
-          console.log(titleDel, posterDel, itemDel)
+          console.log(titleDel, posterDel)
           $(this).closest('div').remove()
           movieCount--
           console.log(movieCount)
@@ -342,7 +339,7 @@ $('#results').on('click', function showMovies(){
           }
         })
         $('#movieSearchSubmit').on('click', function(){
-          var keyword = $('#movieSearch').val().trim()
+          var keyword = $('#movieSearch').val().trim().replace(/\s/g, '+')
           var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=false"
           $.ajax({
             //https://www.themoviedb.org/documentation/api
@@ -350,22 +347,70 @@ $('#results').on('click', function showMovies(){
             method: "GET"
           }).then(function(response) {
             console.log(queryURL)
-            //query response same way as initial so can do a for each function to assign values, 
-            //might do a for look to give movie_i as well
             //dropdown menu shows movie title + year
-            //dropdown item on click creates new div on page and adds 1 to movie count
+            $('#movieSearch').remove()
+            var movieInput = $('<select id="movieSearch" class="custom-select"><option selected>Choose Your Movie</option>')
+            $('#addMovie').prepend(movieInput)
+            for(i=0, j=1, m=response.results.length;i<m, j<m+1;i++, j++){
+              var newOption = $(`<option value="${j}">`)
+              var movieName = response.results[i].title
+              var movieRelease = response.results[i].release_date
+              var movieYear = moment(movieRelease, 'YYYY-MM-DD').format('YYYY')
+              var movieText = `${movieName} (${movieYear})`
+              var moviePoster = "https://image.tmdb.org/t/p/w500" + response.results[i].poster_path
+              $(newOption).text(movieText).attr('data-img', moviePoster).attr('data', movieName).attr('id', "customMovie")
+              $('#movieSearch').append(newOption)
+            }console.log('appended')
+              //dropdown item on click creates new div on page and adds 1 to movie count
+              $('select').change(function(){
+                console.log('appended')
+                  //varible for poster url
+                  var posterURL = $("#movieSearch option:selected").attr('data-img')
+                  console.log($("#movieSearch option:selected").attr('data-img'))
+                  //gets poster img based on URL
+                  var poster = $('<img>').attr('src', posterURL).addClass('w-75 position-relative')
+                  //variable to house div for image
+                  var posterDiv = $('<div>').addClass('posterDiv m-0 p-4')
+                  //variable to house movie title
+                  var movieTitle = $("#movieSearch option:selected").attr('data')
+                  //ads ID for styling and data for pushing up to firebase
+                  $(poster).attr('id', "poster").attr('data', movieTitle)
+                  //stores URL in data in addition to SRC
+                  $(poster).attr('data-img', posterURL)
+                  //links poster to posterDIv
+                  $(posterDiv).append(poster)
+                  //links posterDiv to imgDiv created above
+                  $('#imgDiv').append(posterDiv)
+                  //pushes the new data up to firebase as it is gen
+                  //Exception - will need to modify to allow user to manually add items in
+                  var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
+                  $(posterDiv).append(deleteBtn)
+                  movieCount++
+                  console.log(movieCount)
+                  $('#movieSearch').remove()
+                  var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
+                  $('#addMovie').prepend(movieInput)
+                  $('.deleteBtn').on('click', function deleteBtn() {
+                    var titleDel = $(this).attr('data')
+                    var posterDel = $(this).attr('data-img')
+                    console.log(titleDel, posterDel)
+                    $(this).closest('div').remove()
+                    movieCount--
+                    console.log(movieCount)
+                    if(movieCount<5){
+                      $('#addMovie').show()
+                      $('.deleteBtn').show()
+                      $('#deleteMovie').hide()
+                    }
+                  })
+                  if (movieCount = 5){
+                    $('#addMovie').hide()
+                  }
+              })
           })
         })
       })
-      //turns into a for each function
-      //god this is complicated
-      /*for(i=0; i<currentMovieArr.length; i++) {
-        database.ref(genKey+'/Movies').child('Movie_'+i).set({
-          "Title": movieTitle,
-          "Poster": posterURL,
-          "Vote_Count": 0
-        })
-      }*/
+      
       database.ref(genKey).child('Attendees').set({
         "Host": email,
       })
@@ -374,6 +419,15 @@ $('#results').on('click', function showMovies(){
       })
       //creates button that will submit results and trigger firebase call
       $("#pushSelection").on("click", function() {
+        $('#poster').each(function(i){
+          movieTitle=$('#poster').attr('data')
+          posterUrl=$('#poster').attr('data-img')
+          database.ref(genKey+'/Movies').child('Movie_'+i).set({
+            "Title": movieTitle,
+            "Poster": posterURL,
+            "Vote_Count": 0
+          })
+        }) 
         $('#movieDisplay').hide()
         inviationForm();
     
