@@ -6,9 +6,9 @@ body {
 }
 
 form {
-    padding: 20px 40px 40px 40px;
-    text-align: center;
-    display: block;
+    padding: 20px 0 40px 0;
+    margin: 0;
+    width: 80%;
    
 }
 
@@ -21,18 +21,36 @@ input {
     padding: 20px 0px 30px 0px;
 }
 
-.label {
-    text-align: left;
-    font-size: 18px;
-    padding-right: 10px;
-    margin-top: 20px;
-    margin-bottom: 3px;
+.container {
+    width: 75%;
+}
+
+.form-check-label {
+    margin-right: 20px;
+    margin-left: 5px;
+}
+
+.labels {
+    color: #fff;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#ratingsGroup {
+    margin: 0;
+}
+
+#addFriendBtn {
+    color: #fff;
+    padding: 0;
+    margin-top: 10px;
 }
 
 .titleText {
     font-family: 'Montserrat', sans-serif;
-    color: #f9f9f9;
-    font-size: 25px;
+    color: #fff;
+    font-size: 20px;
+    
 }
 
 #footer {
@@ -104,6 +122,38 @@ input {
 } 
 
 @media (max-width: 991px) {
+    img {
+        width: 100%;
+    }
+    
+    form {
+        width: 100%;
+    }
+
+    .container {
+        width: 90%;
+        text-align: center;
+    }
+
+    .labels {
+        font-size: 20px;
+    }
+
+    .form-check-label {
+        font-size: 16px;
+        margin-right: 15px;
+        text-align: center;
+    }
+
+    .btn-primary {
+        width: 50%;
+        font-size: 20px;
+    }
+
+    #getStartedBtn {
+        width: 70%;
+    }
+    
     .navbar-header {
         float: none;
     }
