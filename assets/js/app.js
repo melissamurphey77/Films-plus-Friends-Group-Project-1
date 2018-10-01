@@ -12,6 +12,7 @@ var database = firebase.database()
 //create global variable to house genKey to ref later on
 var genKey;
 //Global Varriables
+var movieCount = 0
 var name;
 var email;
 var ratings = ["G", "PG", "PG-13", "R"];
@@ -295,7 +296,7 @@ $('#results').on('click', function showMovies(){
       $(movieForm).append(movieInputGroup)
       $('.searchBar').append(movieForm)
       $('#addMovie').hide()
-      var movieCount = 0
+      
       //for loop to create 5 posters and place them on page
       for (var i=0;i<5; i++){
           shuffle(tmdbArr)
@@ -308,7 +309,7 @@ $('#results').on('click', function showMovies(){
           //variable to house movie title
           var movieTitle = tmdbArr[i].title
           //ads ID for styling and data for pushing up to firebase
-          $(poster).attr('id', "poster").attr('data', movieTitle)
+          $(poster).attr('id', "poster").attr('data-title', movieTitle)
           //stores URL in data in addition to SRC
           $(poster).attr('data-img', posterURL)
           //links poster to posterDIv
@@ -318,7 +319,7 @@ $('#results').on('click', function showMovies(){
           //pushes the new data up to firebase as it is gen
           //Exception - will need to modify to allow user to manually add items in
           tmdbArr.splice(i, 1)
-          var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
+          var deleteBtn = $(`<button data-title="${movieTitle}" data-img="${posterURL}" class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
           $(posterDiv).append(deleteBtn)
           $('.deleteBtn').hide()
           movieCount++
@@ -327,14 +328,14 @@ $('#results').on('click', function showMovies(){
       $('#deleteMovie').on('click', function(){
         $('.deleteBtn').show()
         $('#deleteMovie').hide()
-        $('.deleteBtn').on('click', function deleteBtn() {
-          var titleDel = $(this).attr('data')
+        $('.deleteBtn').on('click', function() {
+          var titleDel = $(this).attr('data-title')
           var posterDel = $(this).attr('data-img')
           console.log(titleDel, posterDel)
           $(this).closest('div').remove()
           movieCount--
           console.log(movieCount)
-          if(movieCount<5){
+          if (movieCount<5){
             $('#addMovie').show()
           }
         })
@@ -358,9 +359,9 @@ $('#results').on('click', function showMovies(){
               var movieYear = moment(movieRelease, 'YYYY-MM-DD').format('YYYY')
               var movieText = `${movieName} (${movieYear})`
               var moviePoster = "https://image.tmdb.org/t/p/w500" + response.results[i].poster_path
-              $(newOption).text(movieText).attr('data-img', moviePoster).attr('data', movieName).attr('id', "customMovie")
+              $(newOption).text(movieText).attr('data-img', moviePoster).attr('data-title', movieName).attr('id', "customMovie")
               $('#movieSearch').append(newOption)
-            }console.log('appended')
+            }
               //dropdown item on click creates new div on page and adds 1 to movie count
               $('select').change(function(){
                 console.log('appended')
@@ -372,9 +373,9 @@ $('#results').on('click', function showMovies(){
                   //variable to house div for image
                   var posterDiv = $('<div>').addClass('posterDiv m-0 p-4')
                   //variable to house movie title
-                  var movieTitle = $("#movieSearch option:selected").attr('data')
+                  var movieTitle = $("#movieSearch option:selected").attr('data-title')
                   //ads ID for styling and data for pushing up to firebase
-                  $(poster).attr('id', "poster").attr('data', movieTitle)
+                  $(poster).attr('id', "poster").attr('data-title', movieTitle)
                   //stores URL in data in addition to SRC
                   $(poster).attr('data-img', posterURL)
                   //links poster to posterDIv
@@ -383,34 +384,39 @@ $('#results').on('click', function showMovies(){
                   $('#imgDiv').append(posterDiv)
                   //pushes the new data up to firebase as it is gen
                   //Exception - will need to modify to allow user to manually add items in
-                  var deleteBtn = $(`<button data="${movieTitle}" data-img="${posterURL}" class="btn btn-primary deleteBtn"><i class="far fa-trash-alt"></i></button>`)
-                  $(posterDiv).append(deleteBtn)
+                  var customDeleteBtn = $(`<button data-title="${movieTitle}" data-img="${posterURL}" class="btn btn-primary customDeleteBtn"><i class="far fa-trash-alt"></i></button>`)
+                  $(posterDiv).append(customDeleteBtn)
                   movieCount++
                   console.log(movieCount)
                   $('#movieSearch').remove()
                   var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
                   $('#addMovie').prepend(movieInput)
-                  $('.deleteBtn').on('click', function deleteBtn() {
-                    var titleDel = $(this).attr('data')
+                  $('#addMovie').hide()
+                  if (movieCount<5){
+                    $('#addMovie').show()
+                  }
+                  //this function kept running as many times as the class was on the page 
+                  //which would run the movieCount var down causing major issues
+                  //figured out it was here that was causing but even then took me a few hours 
+                  //trying different functions until .unbind() did the trick
+                  //gooooooood lord
+                  $('.customDeleteBtn').unbind().click(function() {
+                    var titleDel = $(this).attr('data-title')
                     var posterDel = $(this).attr('data-img')
                     console.log(titleDel, posterDel)
                     $(this).closest('div').remove()
                     movieCount--
                     console.log(movieCount)
-                    if(movieCount<5){
+                    if (movieCount<5){
                       $('#addMovie').show()
-                      $('.deleteBtn').show()
-                      $('#deleteMovie').hide()
                     }
                   })
-                  if (movieCount = 5){
-                    $('#addMovie').hide()
-                  }
+
               })
           })
         })
       })
-      
+      console.log(genKey)
       database.ref(genKey).child('Attendees').set({
         "Host": email,
       })
@@ -419,16 +425,36 @@ $('#results').on('click', function showMovies(){
       })
       //creates button that will submit results and trigger firebase call
       $("#pushSelection").on("click", function() {
-        $('#poster').each(function(i){
-          movieTitle=$('#poster').attr('data')
-          posterUrl=$('#poster').attr('data-img')
+          movieDBTitle = []
+          movieDBPoster = []
+          movieDBPush = []
+          $('img[data-title]').each(function(){
+            movieDBTitle.push($(this).data('title'))
+          })
+          $('img[data-img]').each(function(){
+            movieDBPoster.push($(this).data('img'))
+          })
+          for(i=0;i<movieDBPoster.length;i++){
+            var movieTitle = movieDBTitle[i]
+            var posterURL = movieDBPoster[i]
+            var movieObj = {movieTitle, posterURL}
+            movieDBPush.push(movieObj)
+          }
+          console.log(movieDBPush)
+          console.log(movieDBTitle)
+          console.log(movieDBPoster)
+          for(i=0;i<movieCount;i++) {
           database.ref(genKey+'/Movies').child('Movie_'+i).set({
-            "Title": movieTitle,
-            "Poster": posterURL,
+            "Title": movieDBPush[i].movieTitle,
+            "Poster": movieDBPush[i].posterURL,
             "Vote_Count": 0
           })
-        }) 
-        $('#movieDisplay').hide()
+          }
+          database.ref(genKey).child('Feature Count').set({
+            'Feature Count': movieCount
+          })
+          console.log(genKey)
+          $('#movieDisplay').hide()
         inviationForm();
     
     
@@ -501,128 +527,141 @@ function makeId() {
   
     return text;
   }
+})
 
-  $('#accessCodeBtn').on('click', function(){
-    var accessCode = $('#accessCode').val().trim()
-    console.log(accessCode)
+$('#accessCodeBtn').on('click', function(){
+  console.log("ive been clicked")
+  var accessCode = $('#accessCode').val().trim()
+  console.log(accessCode)
 
-    database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
-      var returnArr = [];
-      snapshot.forEach(function(childSnapshot) {
-          var item = childSnapshot.val();
-          item.key = childSnapshot.key;
-  
-          returnArr.push(item);
-      });
-      $('#header, #container, #footer, #accessCodeDiv').hide()
-      $('.navbar').show()
-      var votingDiv = $('#votingDisplay')
-      votingDiv.append('<div>')
-      votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
-      votingDiv.append('<br>')
-      var moviePosterArr = [returnArr[2].Movie_0.Poster, returnArr[2].Movie_1.Poster, returnArr[2].Movie_2.Poster, returnArr[2].Movie_3.Poster]
-      var movieNameArr = [returnArr[2].Movie_0.Title, returnArr[2].Movie_1.Title, returnArr[2].Movie_2.Title, returnArr[2].Movie_3.Title]
-      for (i=0; i<4; i++) {
-        var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).addClass('w-25 p-2 movieImg').attr('id', movieNameArr[i])
-        votingDiv.append(votingPoster)
-      }
-      votingDiv.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
-      $('.movieImg').on('click', function(){
-        $('.movieImg').each(function(){
-          $('.movieImg').removeClass('selected')
-        })
-        $(this).addClass('selected')
-        $('#submitVote').on('click', function(){
-          event.preventDefault()
-          if ($('.movieImg').hasClass('selected')) {
-            var userVote = $('.selected').attr('data')
-            console.log(userVote)
-            database.ref(accessCode + '/Movies/' + userVote).child('Vote_Count').once('value').then(function(childSnapshot) {
-              var voteNum = childSnapshot.val()
-              votePlus = parseInt(voteNum) + 1
-                console.log(votePlus)
-              database.ref(accessCode + '/Movies').child(userVote).update({
-                "Vote_Count": votePlus
-              })
+  database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
+    var returnArr = [];
+    snapshot.forEach(function(childSnapshot) {
+        var item = childSnapshot.val();
+        item.key = childSnapshot.key;
+
+        returnArr.push(item);
+    });
+    console.log(returnArr)
+    $('#header, #container, #footer, #accessCodeDiv').hide()
+    $('.navbar').show()
+    var votingDiv = $('#votingDisplay')
+    votingDiv.append('<div>')
+    votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
+    votingDiv.append('<br>')
+    var maxMoviePosterArr = [returnArr[3].Movie_0.Poster, returnArr[3].Movie_1.Poster, returnArr[3].Movie_2.Poster, returnArr[3].Movie_3.Poster, returnArr[3].Movie_4.Poster]
+    var maxMovieNameArr = [returnArr[3].Movie_0.Title, returnArr[3].Movie_1.Title, returnArr[3].Movie_2.Title, returnArr[3].Movie_3.Title, returnArr[3].Movie_4.Title]
+    var moviePosterArr = []
+    var movieNameArr = []
+    database.ref(accessCode + '/Feature Count/').child('Feature Count').on('value', function(snapshot){
+      featureCount = snapshot.val()
+    })
+    console.log(featureCount)
+    for (i=0; i<featureCount; i++){
+      movieNameArr.push(maxMovieNameArr[i])
+      moviePosterArr.push(maxMoviePosterArr[i])
+    }
+    console.log(maxMovieNameArr, maxMoviePosterArr)
+    for (i=0; i<featureCount; i++) {
+      var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).addClass('w-25 p-2 movieImg').attr('id', movieNameArr[i])
+      votingDiv.append(votingPoster)
+    }
+    votingDiv.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
+    $('.movieImg').on('click', function(){
+      $('.movieImg').each(function(){
+        $('.movieImg').removeClass('selected')
+      })
+      $(this).addClass('selected')
+      $('#submitVote').on('click', function(){
+        event.preventDefault()
+        if ($('.movieImg').hasClass('selected')) {
+          var userVote = $('.selected').attr('data')
+          console.log(userVote)
+          database.ref(accessCode + '/Movies/' + userVote).child('Vote_Count').once('value').then(function(childSnapshot) {
+            var voteNum = childSnapshot.val()
+            votePlus = parseInt(voteNum) + 1
+              console.log(votePlus)
+            database.ref(accessCode + '/Movies').child(userVote).update({
+              "Vote_Count": votePlus
             })
-            $('#votingDisplay').hide()
-            var animeDiv = $('<div>').addClass('loadingBar')
-            var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
-            messageDiv.append(animeDiv)
-            $('#messageDisplay').append(messageDiv)
-              checkVotes()
-              function checkVotes(){
-                //query firebase for votenumber of every movie
-                var queryArr = [];
-                database.ref(accessCode + '/Movies').on('value', function snapshotToArray(snapshot) {
-                  snapshot.forEach(function(childSnapshot) {
-                      var item = childSnapshot.val();
-                      item.key = childSnapshot.key;
-              
-                      queryArr.push(item);
-                  });
-                })
-                
-                var voteCountArr = [queryArr[0].Vote_Count, queryArr[1].Vote_Count, queryArr[2].Vote_Count, queryArr[3].Vote_Count];
-                var movieNumArr = [queryArr[0].key, queryArr[1].key, queryArr[2].key, queryArr[3].key];
-                var emailArr = [];
-                console.log(emailArr)
-                database.ref(accessCode + '/Attendees').on('value', function snapshotToArray(snapshot) {
-                  snapshot.forEach(function(childSnapshot) {
-                      var item = childSnapshot.val();
-                      item.key = childSnapshot.key;
-              
-                      emailArr.push(item);
-                  });
-                })
-                var totalVotes = voteCountArr.reduce(add, 0);
-                  function add(a, b) {
-                    return a + b;
-                  }
-                //sort out movies based on vote count
-                console.log(queryArr)
-                console.log(movieNumArr)
-                console.log(voteCountArr)
-                console.log(totalVotes)
-                //var emailCount = [emailArr[0], emailArr[1], emailArr[2], emailArr[3], emailArr[4]]
-                var emailCount = []
-                for (i=0; i<emailArr.length;i++){
-                  emailCount.push(emailArr[i])
-                }
-                
-                emailCount = emailCount.filter(v=>v!='')
-                console.log(emailCount.length)
-                console.log(totalVotes)
-                //if total votes equals ammount of emails submitted - fire email
-                if(totalVotes === emailCount.length -1){
-                  //Send email with results
-                  var highestVote = Math.max.apply(null, voteCountArr)
-                  var winnerPosition = voteCountArr.indexOf(highestVote)
-                  var winner = movieNumArr[winnerPosition]
-                  console.log(highestVote)
-                  console.log(winnerPosition)
-                  console.log(winner)
-                  database.ref(accessCode + '/Movies/' + winner).once('value', function(snapshot){
-                    var winningPoster = snapshot.val().Poster
-                    var winningTitle = snapshot.val().Title
-                    console.log(winningPoster)
-                    console.log(winningTitle)
-                    //replace with modal
-                    alert("All the votes are in, please check your email for the results!")
-                  })
-                  //send data via email with saved poster URL and title
-                  //database.ref(accessCode).push().set().remove()
-                } else {
-                  //replace with modal
-                  alert("A few more friends still need to vote, keep an eye on your email for the results")
-                }
-              }
-          } else {
-            alert("Please make a selection before proceeding")
-            //will replace this with Modal, but looks OK for now
-          }
-          
           })
+          $('#votingDisplay').hide()
+          var animeDiv = $('<div>').addClass('loadingBar')
+          var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
+          messageDiv.append(animeDiv)
+          $('#messageDisplay').append(messageDiv)
+            checkVotes()
+            function checkVotes(){
+              //query firebase for votenumber of every movie
+              var queryArr = [];
+              database.ref(accessCode + '/Movies').on('value', function snapshotToArray(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    var item = childSnapshot.val();
+                    item.key = childSnapshot.key;
+            
+                    queryArr.push(item);
+                });
+              })
+              
+              var voteCountArr = [queryArr[0].Vote_Count, queryArr[1].Vote_Count, queryArr[2].Vote_Count, queryArr[3].Vote_Count];
+              var movieNumArr = [queryArr[0].key, queryArr[1].key, queryArr[2].key, queryArr[3].key];
+              var emailArr = [];
+              console.log(emailArr)
+              database.ref(accessCode + '/Attendees').on('value', function snapshotToArray(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    var item = childSnapshot.val();
+                    item.key = childSnapshot.key;
+            
+                    emailArr.push(item);
+                });
+              })
+              var totalVotes = voteCountArr.reduce(add, 0);
+                function add(a, b) {
+                  return a + b;
+                }
+              //sort out movies based on vote count
+              console.log(queryArr)
+              console.log(movieNumArr)
+              console.log(voteCountArr)
+              console.log(totalVotes)
+              //var emailCount = [emailArr[0], emailArr[1], emailArr[2], emailArr[3], emailArr[4]]
+              var emailCount = []
+              for (i=0; i<emailArr.length;i++){
+                emailCount.push(emailArr[i])
+              }
+              
+              emailCount = emailCount.filter(v=>v!='')
+              console.log(emailCount.length)
+              console.log(totalVotes)
+              //if total votes equals ammount of emails submitted - fire email
+              if(totalVotes === emailCount.length -1){
+                //Send email with results
+                var highestVote = Math.max.apply(null, voteCountArr)
+                var winnerPosition = voteCountArr.indexOf(highestVote)
+                var winner = movieNumArr[winnerPosition]
+                console.log(highestVote)
+                console.log(winnerPosition)
+                console.log(winner)
+                database.ref(accessCode + '/Movies/' + winner).once('value', function(snapshot){
+                  var winningPoster = snapshot.val().Poster
+                  var winningTitle = snapshot.val().Title
+                  console.log(winningPoster)
+                  console.log(winningTitle)
+                  //replace with modal
+                  alert("All the votes are in, please check your email for the results!")
+                })
+                //send data via email with saved poster URL and title
+                //database.ref(accessCode).push().set().remove()
+              } else {
+                //replace with modal
+                alert("A few more friends still need to vote, keep an eye on your email for the results")
+              }
+            }
+        } else {
+          alert("Please make a selection before proceeding")
+          //will replace this with Modal, but looks OK for now
+        }
+        
         })
       })
     })
