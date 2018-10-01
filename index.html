@@ -1,39 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Films with Friends</title>
     <link rel="stylesheet" href="assets/css/reset.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Fredoka+One|Montserrat" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
-    <link rel="icon" 
-      type="image/png" 
-      href="assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <!---->
 </head>
+
 <body class="text-center">
-    <div id="accessCodeDiv" class="input-group input-group-sm mb-3 float-right w-25 p-4 col-2">
-        <input id="accessCode" type="text" class="form-control" placeholder="Access Code">
-            <div class="input-group-append">
-                <button class="btn btn-search text-center" id="accessCodeBtn"><i class="fas fa-search"></i></button>
-            </div>
-    </div>
-    <nav class="navbar navbar-light">
-        <a class="navbar-brand" href="index.html">
-            <img src="assets/images/filmsFriends2.png" class="d-inline-block align-middle mx-auto img-responsive">
+    <nav class="navbar text-center navbar-light">
+        <a class="navbar-brand" id="logo" href="index.html">
+            <img src="assets/images/filmsFriendsOrange.png" class="d-inline-block align-middle mx-auto img-responsive">
         </a>
     </nav>
-    <br>
-    <header id="header d-inline-block">
-      <img src="assets/images/filmsFriendsOrange.svg" id="header" alt="Films and Friends Logo">
-    </header>
     <div class="container">
-        <!--picture name div goes here-->
+        <div class="row">
+            <div id="accessCodeDiv" class="input-group input-group-sm mb-3 offset-10 w-25 p-4 col-lg-2">
+              <input id="accessCode" type="text" class="form-control" placeholder="Access Code">
+                <div class="input-group-append">
+                    <button class="btn btn-search text-center" id="accessCodeBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <header id="header d-inline-block">
+                    <img src="assets/images/filmsFriendsOrange.svg" id="header" alt="Films and Friends Logo">
+                </header>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="container">
+        <!--picture name div goes here
+        <div id="greeting"></div>-->
         <div id="container"></div>
         <div id="movieDisplay"></div>
         <div id="emailDisplay"></div>
@@ -55,8 +71,9 @@
             -->
         </div>
     </footer>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
-<script src="assets/js/app.js"></script>  
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
+
 </html>
