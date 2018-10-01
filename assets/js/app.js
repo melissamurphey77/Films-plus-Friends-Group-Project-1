@@ -596,6 +596,38 @@ function makeId() {
                     var winningTitle = snapshot.val().Title
                     console.log(winningPoster)
                     console.log(winningTitle)
+
+                    for (var z = 0; z < emailArr; z++){
+                      var finalEmail = emailArr[z];
+                    
+                      var resultsAPIData = {
+                        service_id: 'default_service',
+                        template_id: 'winningmovie',
+                        user_id: 'user_f8xmQlMBlmM86ckD62Lis',
+                        template_params: {
+                          'email': finalEmail,
+                          'movietitle': winningPoster,
+                          'movieposter': winningTitle
+                        }
+                      };
+                   
+                      $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
+                          type: 'POST',
+                          data: JSON.stringify(resultsAPIData),
+                          contentType: 'application/json',
+                          async: false
+                      }).done(function() {
+                          console.log('Your mail is sent!');
+                      }).fail(function(error) {
+                          console.log('Oops... ' + JSON.stringify(error));
+                      });
+
+                    }//end of for loop
+
+
+
+
+
                     //replace with modal
                     alert("All the votes are in, please check your email for the results!")
                   })
