@@ -341,8 +341,18 @@ $('#results').on('click', function showMovies(){
       $("#pushSelection").on("click", function() {
         $('#movieDisplay').hide()
         inviationForm();
-    
-    
+    var addFriendCount = 0;
+
+      $("#addFriendBtn").on("click", function(){
+        addFriendCount++;
+        var additionalEmail = $("<input>");
+        additionalEmail.attr("type", "email");
+        additionalEmail.attr("id", `friendEmail_${addFriendCount}`);
+        additionalEmail.attr("class", "form-control col-sm-8 offset-sm-1 addedFriend");
+        $("#friendDiv").append(additionalEmail);
+
+      });
+
         function inviationForm() {
     
           var inviteForm = $("<form>");
@@ -352,6 +362,7 @@ $('#results').on('click', function showMovies(){
           //Generate Email input for inviting friends
           var friendDiv = $("<div>");
           friendDiv.attr("class", "form-group row justify-content-center");
+          friendDiv.attr("id", "friendDiv");
     
           var friendLabel = $("<label>");
           friendLabel.attr("class", "col-sm-2 col-form-label labels");
@@ -363,7 +374,7 @@ $('#results').on('click', function showMovies(){
           //for (i=1; i<5; i++) {
             var friendEmail = $("<input>");
             friendEmail.attr("type", "email");
-            friendEmail.attr("id", `friendEmail_${i}`);
+            friendEmail.attr("id", `friendEmail_0`);
             friendEmail.attr("class", "form-control col-sm-8");
             friendEmail.attr("placeholder", "ex: yourfriend@filmplusfriends.com");
             friendDiv.append(friendEmail);
@@ -372,17 +383,18 @@ $('#results').on('click', function showMovies(){
           friendDiv.appendTo(inviteForm);
 
           //Add Friend Button
+          var addFriendDiv = $("<div>");
+          addFriendDiv.attr("id", "addFriendBtn");
+          addFriendDiv.attr("class", "col-sm-1");
+          
+
           var addFriend = $("<i>");
-          addFriend.attr("id", "addFriendBtn");
-          addFriend.attr("class", "fas fa-plus-circle col-sm-1 btn");
-          
-          friendDiv.append(addFriend);
+          addFriend.attr("class", "fas fa-plus-circle btn");
+          addFriendDiv.append(addFriend);
+          friendDiv.append(addFriendDiv);
 
           
-          $("#addFriendBtn").on("click", function(){
-            alert("help!");
-
-          });
+        
 
           //Message area
           var messageDiv = $("<div>");
@@ -418,16 +430,14 @@ $('#results').on('click', function showMovies(){
 
           $('#sendInviteBtn').on('click', function(){
             event.preventDefault()
-            var email_1 = $('#friendEmail_1').val().trim()
-            var email_2 = $('#friendEmail_2').val().trim()
-            var email_3 = $('#friendEmail_3').val().trim()
-            var email_4 = $('#friendEmail_4').val().trim()
-            database.ref(genKey).child('Attendees').update({
-              "Guest_1": email_1,
-              "Guest_2": email_2,
-              "Guest_3": email_3,
-              "Guest_4": email_4
-            })
+
+            for (var k = 0; k <= addFriendCount; k++) {
+              var currentEmail = $("#friendEmail_" + k ).val().trim();
+              database.ref(genKey).child('Attendees').update({
+                [`Guest_${k}`]: currentEmail
+              });
+            };
+           
             document.location.reload();
           })
         };
