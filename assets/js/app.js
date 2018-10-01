@@ -15,6 +15,7 @@ var genKey;
 var movieCount = 0
 var name;
 var email;
+var message;
 var ratings = ["G", "PG", "PG-13", "R"];
 var selectedRating;
 var selectedGenre;
@@ -96,6 +97,8 @@ var genres = [
       "name": "Western"
     }
   ];
+
+
 $('.navbar').hide()
 var getStartedBtn = $("<button>");
 
@@ -110,21 +113,25 @@ $("#getStartedBtn").on("click", function () {
     $('#accessCodeDiv').hide()
     $('#header').hide()
     $('.navbar').show()
-    //Steps to hide/clear the landing page and run makeSearchForm
+  //Steps to hide/clear the landing page and run makeSearchForm
     $("#container").empty();
     $("#footer").hide();
     makeSearchForm();
 
-    //Function to generate the Form that gathers information needed to process the API call
+  //Function to generate the Form that gathers information needed to process the API call
 function makeSearchForm() {
   //Create the Form to which all form fields will be appended
   var searchForm = $("<form>");
 
       searchForm.attr("id", "searchForm");
+      searchForm.attr("class", "form-horizontal");
 
   //Generate the Name Field
+  var nameDiv = $("<div>");
+      nameDiv.attr("class", "form-group row justify-content-around");
+
   var nameLabel = $("<label>");
-      nameLabel.attr("class", "label");
+      nameLabel.attr("class", "col-sm-2 col-form-label labels");
       nameLabel.attr("for", "nameField");
       nameLabel.text("Name: ");
 
@@ -132,11 +139,17 @@ function makeSearchForm() {
 
       nameField.attr("type", "text");
       nameField.attr("id", "nameField");
-      nameField.attr("class", "form-control");
+      nameField.attr("class", "form-control col-sm-10");
+
+      nameDiv.append(nameLabel);
+      nameDiv.append(nameField);
 
   //Generate the Email Field
+  var emailDiv = $("<div>");
+      emailDiv.attr("class", "form-group row justify-content-around");
+
   var emailLabel = $("<label>");
-      emailLabel.attr("class", "label");
+      emailLabel.attr("class", "col-sm-2 col-form-label labels");
       emailLabel.attr("for", "emailField");
       emailLabel.text("Email: ");
 
@@ -144,41 +157,57 @@ function makeSearchForm() {
 
       emailField.attr("type", "email");
       emailField.attr("id", "emailField");
-      emailField.attr("class", "form-control");
+      emailField.attr("class", "form-control col-sm-10");
 
+      emailDiv.append(emailLabel);
+      emailDiv.append(emailField);
 
   //Generate the Ratings Checkboxes
-  var ratingsLabel = $("<Label>");
-      ratingsLabel.attr("class", "label");
+  var ratingsDiv = $("<div>");
+      ratingsDiv.attr("class", "form-group row justify-content-around");
+
+  var ratingsLabel = $("<label>");
+      ratingsLabel.attr("class", "col-sm-2 col-form-label labels");
       ratingsLabel.attr("for","ratingsGroup");
       ratingsLabel.text("Ratings: ");
 
   var ratingsGroup = $("<div>");
       ratingsGroup.attr("id", "ratingsGroup");
+      ratingsGroup.attr("class", "form-check-inline col-sm-10");
+
       for (var j=0; j < ratings.length; j++) {
   
       var ratingsCheck = $("<input>");
       var ratingsText = $('<p>')
       ratingsCheck.attr("type", "checkbox");
+      ratingsCheck.attr("class", "form-check-input");
       ratingsCheck.attr("id", "ratingsCheck" + ratings[j]);
       ratingsCheck.attr("name", "ratingsCheck" + ratings[j]);
       ratingsCheck.attr("value", ratings[j]);
+      
+      ratingsText.attr("class", "form-check-label labels");
       ratingsText.text(ratings[j]);
 
       ratingsCheck.appendTo(ratingsGroup);
       ratingsGroup.append(ratingsText)
-      //ratingsGroup.append("<br>");
+      
       };
 
+      ratingsDiv.append(ratingsLabel);
+      ratingsDiv.append(ratingsGroup);
+
   //Generate the Genres Dropdown List
+  var genresDiv = $("<div>");
+      genresDiv.attr("class", "form-group row justify-content-around");
+
   var genresLabel = $("<label>");
-      genresLabel.attr("class", "label");
+      genresLabel.attr("class", "col-sm-2 col-form-label labels");
       genresLabel.attr("for", "genresDropdown");
       genresLabel.text("Genre: ");
 
   var genresDropdown = $("<select>");
       genresDropdown.attr("id", "genresDropdown");
-      genresDropdown.attr("class", "form-control");
+      genresDropdown.attr("class", "form-control col-sm-10");
 
       for (var i = 0; i < genres.length; i++) {
       
@@ -191,6 +220,9 @@ function makeSearchForm() {
 
       };
 
+      genresDiv.append(genresLabel);
+      genresDiv.append(genresDropdown);
+
   //Generate the Submit button
   var searchSubmitBtn = $("<button>");
 
@@ -201,18 +233,15 @@ function makeSearchForm() {
 
 
   //Connect the form components
-  nameLabel.appendTo(searchForm);
-  nameField.appendTo(searchForm);
-  emailLabel.appendTo(searchForm);
-  emailField.appendTo(searchForm);
-  ratingsLabel.appendTo(searchForm);
-  ratingsGroup.appendTo(searchForm);
-  genresLabel.appendTo(searchForm);
-  genresDropdown.appendTo(searchForm);
+  nameDiv.appendTo(searchForm);
+  emailDiv.appendTo(searchForm);
+  ratingsDiv.appendTo(searchForm);
+  genresDiv.appendTo(searchForm);
+  searchSubmitBtn.appendTo(searchForm);
   
   //Append the form and button to the HTML
   searchForm.appendTo("#container");
-  searchSubmitBtn.appendTo("#container");
+  
 
   var selectedGenre = $("#genresDropdown option:selected").attr("id");
 
@@ -456,34 +485,77 @@ $('#results').on('click', function showMovies(){
           console.log(genKey)
           $('#movieDisplay').hide()
         inviationForm();
-    
-    
+    var addFriendCount = 0;
+
+      $("#addFriendBtn").on("click", function(){
+        addFriendCount++;
+        var additionalEmail = $("<input>");
+        additionalEmail.attr("type", "email");
+        additionalEmail.attr("id", `friendEmail_${addFriendCount}`);
+        additionalEmail.attr("class", "form-control col-sm-8 offset-sm-1 addedFriend");
+        $("#friendDiv").append(additionalEmail);
+
+      });
+
         function inviationForm() {
     
           var inviteForm = $("<form>");
           inviteForm.attr("id", "inviteForm");
+          inviteForm.attr("class", "form-horizontal");
     
           //Generate Email input for inviting friends
           var friendDiv = $("<div>");
-          friendDiv.attr("class", "form-group");
+          friendDiv.attr("class", "form-group row justify-content-center");
+          friendDiv.attr("id", "friendDiv");
     
           var friendLabel = $("<label>");
-          friendLabel.attr("class", "label");
+          friendLabel.attr("class", "col-sm-2 col-form-label labels");
           friendLabel.attr("for", "friendEmail");
-          friendLabel.text("Friends Emails: ");
+          friendLabel.text("Friends: ");
+          
+          
           friendDiv.append(friendLabel);
-          for (i=1; i<5; i++) {
+          //for (i=1; i<5; i++) {
             var friendEmail = $("<input>");
             friendEmail.attr("type", "email");
-            friendEmail.attr("id", `friendEmail_${i}`);
-            friendEmail.attr("class", "form-control m-4");
+            friendEmail.attr("id", `friendEmail_0`);
+            friendEmail.attr("class", "form-control col-sm-8");
+            friendEmail.attr("placeholder", "ex: yourfriend@filmplusfriends.com");
             friendDiv.append(friendEmail);
-          }
+          //}
     
           friendDiv.appendTo(inviteForm);
-    
-          //Message area
+
+          //Add Friend Button
+          var addFriendDiv = $("<div>");
+          addFriendDiv.attr("id", "addFriendBtn");
+          addFriendDiv.attr("class", "col-sm-1");
           
+
+          var addFriend = $("<i>");
+          addFriend.attr("class", "fas fa-plus-circle btn");
+          addFriendDiv.append(addFriend);
+          friendDiv.append(addFriendDiv);
+
+          //Message area
+          var messageDiv = $("<div>");
+          messageDiv.attr("class", "form-group row justify-content-center");
+
+          var messageLabel = $("<label>");
+          messageLabel.attr("class", "col-sm-2 col-form-label labels");
+          messageLabel.attr("for", "messageBox");
+          messageLabel.text("Details: ");
+
+          var messageBox = $("<textarea>");
+          messageBox.attr("class", "form-control col-sm-9");
+          messageBox.attr("id", "messageBox");
+          messageBox.attr("rows", "8");
+          messageBox.attr("placeholder", "Don't forget to include when and where your movie night will happen! Maybe, offer details of what your friends should bring!");
+          
+          messageDiv.append(messageLabel);
+          messageDiv.append(messageBox);
+
+          messageDiv.appendTo(inviteForm);
           
           //Submit Btn for Sending the Invites
           var sendInviteBtn = $("<button>");
@@ -495,20 +567,50 @@ $('#results').on('click', function showMovies(){
           sendInviteBtn.appendTo(inviteForm);
     
           inviteForm.appendTo("#emailDisplay");
+
+
           $('#sendInviteBtn').on('click', function(){
             event.preventDefault()
-            var email_1 = $('#friendEmail_1').val().trim()
-            var email_2 = $('#friendEmail_2').val().trim()
-            var email_3 = $('#friendEmail_3').val().trim()
-            var email_4 = $('#friendEmail_4').val().trim()
-            database.ref(genKey).child('Attendees').update({
-              "Guest_1": email_1,
-              "Guest_2": email_2,
-              "Guest_3": email_3,
-              "Guest_4": email_4
-            })
+
+            message = $("#messageBox").val().trim();
+
+            for (var k = 0; k <= addFriendCount; k++) {
+              var currentEmail = $("#friendEmail_" + k ).val().trim();
+              database.ref(genKey).child('Attendees').update({
+                [`Guest_${k}`]: currentEmail
+              });
+
+              var emailAPIData = {
+                service_id: 'default_service',
+                template_id: 'sendsurvey',
+                user_id: 'user_f8xmQlMBlmM86ckD62Lis',
+                template_params: {
+                    'email': currentEmail,
+                    'name': name,
+                    'message': message,
+                    'accesscode': genKey
+                }
+            };
+             
+            $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
+                type: 'POST',
+                data: JSON.stringify(emailAPIData),
+                contentType: 'application/json',
+                async: false
+            }).done(function() {
+                alert('Your mail is sent!');
+            }).fail(function(error) {
+                alert('Oops... ' + JSON.stringify(error));
+            });
+
+            };//end for loop
+           
             document.location.reload();
-          })
+          });
+          
+          
+         
+
         };
     
       });
@@ -603,10 +705,12 @@ $('#accessCodeBtn').on('click', function(){
                 });
               })
               
-              var voteCountArr = [queryArr[0].Vote_Count, queryArr[1].Vote_Count, queryArr[2].Vote_Count, queryArr[3].Vote_Count];
-              var movieNumArr = [queryArr[0].key, queryArr[1].key, queryArr[2].key, queryArr[3].key];
+              var voteCountArr = [queryArr[0].Vote_Count, queryArr[1].Vote_Count, queryArr[2].Vote_Count, queryArr[3].Vote_Count, queryArr[4].Vote_Count];
+              var movieNumArr = [queryArr[0].key, queryArr[1].key, queryArr[2].key, queryArr[3].key, queryArr[4].key];
               var emailArr = [];
               console.log(emailArr)
+              console.log(movieNumArr)
+              console.log(voteCountArr)
               database.ref(accessCode + '/Attendees').on('value', function snapshotToArray(snapshot) {
                 snapshot.forEach(function(childSnapshot) {
                     var item = childSnapshot.val();
@@ -615,6 +719,7 @@ $('#accessCodeBtn').on('click', function(){
                     emailArr.push(item);
                 });
               })
+              console.log(emailArr)
               var totalVotes = voteCountArr.reduce(add, 0);
                 function add(a, b) {
                   return a + b;
@@ -629,32 +734,62 @@ $('#accessCodeBtn').on('click', function(){
               for (i=0; i<emailArr.length;i++){
                 emailCount.push(emailArr[i])
               }
-              
+              //removes empty strings from array
               emailCount = emailCount.filter(v=>v!='')
               console.log(emailCount.length)
               console.log(totalVotes)
               //if total votes equals ammount of emails submitted - fire email
-              if(totalVotes === emailCount.length -1){
-                //Send email with results
-                var highestVote = Math.max.apply(null, voteCountArr)
-                var winnerPosition = voteCountArr.indexOf(highestVote)
-                var winner = movieNumArr[winnerPosition]
-                console.log(highestVote)
-                console.log(winnerPosition)
-                console.log(winner)
-                database.ref(accessCode + '/Movies/' + winner).once('value', function(snapshot){
-                  var winningPoster = snapshot.val().Poster
-                  var winningTitle = snapshot.val().Title
-                  console.log(winningPoster)
-                  console.log(winningTitle)
-                  //replace with modal
-                  alert("All the votes are in, please check your email for the results!")
-                })
-                //send data via email with saved poster URL and title
-                //database.ref(accessCode).push().set().remove()
-              } else {
+                if(totalVotes === emailCount.length -1){
+                  //Send email with results
+                  var highestVote = Math.max.apply(null, voteCountArr)
+                  var winnerPosition = voteCountArr.indexOf(highestVote)
+                  var winner = movieNumArr[winnerPosition]
+                  console.log(highestVote)
+                  console.log(winnerPosition)
+                  console.log(winner)
+                  database.ref(accessCode + '/Movies/' + winner).once('value', function(snapshot){
+                    var winningPoster = snapshot.val().Poster
+                    var winningTitle = snapshot.val().Title
+                    console.log(winningPoster)
+                    console.log(winningTitle)
+
+                    for (var z = 0; z < emailArr.length; z++){
+                      var finalEmail = emailArr[z];
+                      console.log(emailArr[z])
+                      console.log(finalEmail)
+                    
+                      var resultsAPIData = {
+                        service_id: 'default_service',
+                        template_id: 'winningmovie',
+                        user_id: 'user_f8xmQlMBlmM86ckD62Lis',
+                        template_params: {
+                          'email': finalEmail,
+                          'movietitle': winningPoster,
+                          'movieposter': winningTitle
+                        }
+                      };
+                   
+                      $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
+                          type: 'POST',
+                          data: JSON.stringify(resultsAPIData),
+                          contentType: 'application/json',
+                          async: false
+                      }).done(function() {
+                          console.log('Your mail is sent!');
+                          document.location.reload();
+                      }).fail(function(error) {
+                          console.log('Oops... ' + JSON.stringify(error));
+                          document.location.reload();
+                      });
+
+                    }//end of for loop
+                  })
+                  //send data via email with saved poster URL and title
+                  //database.ref(accessCode).push().set().remove()
+                } else {
                 //replace with modal
                 alert("A few more friends still need to vote, keep an eye on your email for the results")
+                document.location.reload();
               }
             }
         } else {
