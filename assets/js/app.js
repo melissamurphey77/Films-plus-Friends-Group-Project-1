@@ -14,6 +14,7 @@ var genKey;
 //Global Varriables
 var name;
 var email;
+var message;
 var ratings = ["G", "PG", "PG-13", "R"];
 var selectedRating;
 var selectedGenre;
@@ -95,6 +96,8 @@ var genres = [
       "name": "Western"
     }
   ];
+
+
 $('.navbar').hide()
 var getStartedBtn = $("<button>");
 
@@ -393,9 +396,6 @@ $('#results').on('click', function showMovies(){
           addFriendDiv.append(addFriend);
           friendDiv.append(addFriendDiv);
 
-          
-        
-
           //Message area
           var messageDiv = $("<div>");
           messageDiv.attr("class", "form-group row justify-content-center");
@@ -431,15 +431,45 @@ $('#results').on('click', function showMovies(){
           $('#sendInviteBtn').on('click', function(){
             event.preventDefault()
 
+            message = $("#messageBox").val().trim();
+
             for (var k = 0; k <= addFriendCount; k++) {
               var currentEmail = $("#friendEmail_" + k ).val().trim();
               database.ref(genKey).child('Attendees').update({
                 [`Guest_${k}`]: currentEmail
               });
+
+              var emailAPIData = {
+                service_id: 'default_service',
+                template_id: 'sendsurvey',
+                user_id: 'user_f8xmQlMBlmM86ckD62Lis',
+                template_params: {
+                    'email': currentEmail,
+                    'name': name,
+                    'message': message,
+                    'accesscode': genKey
+                }
             };
+             
+            $.ajax('https://api.emailjs.com/api/v1.0/email/send', {
+                type: 'POST',
+                data: JSON.stringify(emailAPIData),
+                contentType: 'application/json',
+                async: false
+            }).done(function() {
+                alert('Your mail is sent!');
+            }).fail(function(error) {
+                alert('Oops... ' + JSON.stringify(error));
+            });
+
+            };//end for loop
            
             document.location.reload();
-          })
+          });
+          
+          
+         
+
         };
     
       });
