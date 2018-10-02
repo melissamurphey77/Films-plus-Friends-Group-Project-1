@@ -380,7 +380,7 @@ $('#results').on('click', function showMovies(){
         })
         $('#movieSearchSubmit').on('click', function(){
           var keyword = $('#movieSearch').val().trim().replace(/\s/g, '+')
-          var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=false"
+          var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=true"
           $.ajax({
             //https://www.themoviedb.org/documentation/api
             url: queryURL,
@@ -388,11 +388,12 @@ $('#results').on('click', function showMovies(){
           }).then(function(response) {
             console.log(queryURL)
             console.log(response)
-            if (response.results[0].total_results === 0){
+            if (response.total_results === 0||undefined){
               $('#movieSearch').remove()
               var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
               $('#addMovie').prepend(movieInput)
-            }
+              alert("We are not finding what you are looking for, please check spelling and try again.")
+            } else {
             //dropdown menu shows movie title + year
             $('#movieSearch').remove()
             var movieInput = $('<select id="movieSearch" class="custom-select"><option selected>Choose Your Movie</option>')
@@ -407,6 +408,7 @@ $('#results').on('click', function showMovies(){
               $(newOption).text(movieText).attr('data-img', moviePoster).attr('data-title', movieName).attr('id', "customMovie")
               $('#movieSearch').append(newOption)
             }
+          }
               //dropdown item on click creates new div on page and adds 1 to movie count
               $('select').change(function(){
                 console.log('appended')
