@@ -104,7 +104,7 @@ var getStartedBtn = $("<button>");
 
 getStartedBtn.attr("id", "getStartedBtn");
 getStartedBtn.attr("type", "submit");
-getStartedBtn.attr("class", "btn btn-primary");
+getStartedBtn.attr("class", "btn btn-primary animated bounce delay-4s");
 getStartedBtn.text("Get Started!");
 
 getStartedBtn.appendTo("#container");
