@@ -98,7 +98,6 @@ var genres = [
     }
   ];
 
-
 $('.navbar').hide()
 var getStartedBtn = $("<button>");
 
