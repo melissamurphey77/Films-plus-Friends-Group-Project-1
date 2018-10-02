@@ -62,12 +62,12 @@ input {
 }
 
 #footer {
-   position: relative;
-   left: 0;
-   bottom: 0;
+   position: fixed;
+   left: 0vh;
+   bottom: 0vh;
+   top: 93Vh;
    text-align: center;
    width: 100%;
-   
 }
 .dropdown {
     position: relative;
@@ -213,7 +213,6 @@ input {
     
     
 }
-
 
 
 /* CSS styling for scrolling search bar */
