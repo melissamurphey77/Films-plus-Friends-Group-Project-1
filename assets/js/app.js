@@ -380,7 +380,7 @@ $('#results').on('click', function showMovies(){
         })
         $('#movieSearchSubmit').on('click', function(){
           var keyword = $('#movieSearch').val().trim().replace(/\s/g, '+')
-          var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=false"
+          var queryURL = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&language=en-US&query=" + keyword + "&page=1&include_adult=true"
           $.ajax({
             //https://www.themoviedb.org/documentation/api
             url: queryURL,
@@ -388,11 +388,14 @@ $('#results').on('click', function showMovies(){
           }).then(function(response) {
             console.log(queryURL)
             console.log(response)
-            if (response.results[0].total_results === 0){
+            if (response.total_results === 0||undefined){
               $('#movieSearch').remove()
               var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
               $('#addMovie').prepend(movieInput)
-            }
+              $('.modal-text').text("We aren't finding what your looking for, please check spelling and try again.")
+              $(".modal").modal();
+              console.log("modal should have fired")
+            } else {
             //dropdown menu shows movie title + year
             $('#movieSearch').remove()
             var movieInput = $('<select id="movieSearch" class="custom-select h-70"><option selected>Choose Your Movie</option>')
@@ -407,6 +410,7 @@ $('#results').on('click', function showMovies(){
               $(newOption).text(movieText).attr('data-img', moviePoster).attr('data-title', movieName).attr('id', "customMovie")
               $('#movieSearch').append(newOption)
             }
+          }
               //dropdown item on click creates new div on page and adds 1 to movie count
               $('select').change(function(){
                 console.log('appended')
@@ -616,9 +620,12 @@ $('#results').on('click', function showMovies(){
                 contentType: 'application/json',
                 async: false
             }).done(function() {
-                alert('Your mail is sent!');
+              $('.modal-text').text("Your email has been sent!")
+              $(".modal").modal();
             }).fail(function(error) {
-                alert('Oops... ' + JSON.stringify(error));
+              $('.modal-title').text("Reload the page and try again.")
+              $('.modal-text').text('Oops... ' + JSON.stringify(error))
+              $(".modal").modal();
             });
 
             };//end for loop
@@ -653,6 +660,18 @@ $('#accessCodeBtn').on('click', function(){
   console.log("ive been clicked")
   var accessCode = $('#accessCode').val().trim()
   console.log(accessCode)
+  database.ref(accessCode).once("value")
+  .then(function(snapshot) {
+    snapshot.exists();  // true
+    if (!snapshot.exists()){
+      $('.modal-title').text("Not finding anything")
+      $('.modal-text').text("Please confirm you have typed out your access code properly. If you don't have one, click Get Started")
+      $(".modal").modal();
+      $('.close').on('click', function(){
+        document.location.reload();
+      })
+    }
+  });
 
   database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
     var returnArr = [];
@@ -793,26 +812,43 @@ $('#accessCodeBtn').on('click', function(){
                           contentType: 'application/json',
                           async: false
                       }).done(function() {
-                          console.log('Your mail is sent!');
+                        $('.modal-title').text("And the winner is...")
+                        $('.modal-text').text("")
+                        $(".modal").modal();
+                        $('.close').on('click', function(){
                           document.location.reload();
+                        })
+
                       }).fail(function(error) {
-                          console.log('Oops... ' + JSON.stringify(error));
+                        $('.modal-title').text("Reload the page and try again.")
+                        $('.modal-text').text('Oops... ' + JSON.stringify(error))
+                        $(".modal").modal();
+                        $('.close').on('click', function(){
                           document.location.reload();
+                        })
                       });
 
                     }//end of for loop
                   })
-                  //send data via email with saved poster URL and title
-                  //database.ref(accessCode).push().set().remove()
+                  //purge data from firebase after voting ends
+                  //ref.child(accessCode).remove();
                 } else {
-                //replace with modal
-                alert("A few more friends still need to vote, keep an eye on your email for the results")
-                document.location.reload();
+                //replace with moda
+                $('.modal-title').text("Right on!")
+                $('.modal-text').text("A few more friends still need to vote, keep an eye on your email for the results")
+                $(".modal").modal();
+                $('.close').on('click', function(){
+                  document.location.reload();
+                })
               }
             }
         } else {
-          alert("Please make a selection before proceeding")
-          //will replace this with Modal, but looks OK for now
+          $('.modal-title').text("Oops!")
+          $('.modal-text').text("Please make a selection before proceeding")
+          $(".modal").modal();
+          $('.close').on('click', function(){
+            document.location.reload();
+          })
         }
         
         })
