@@ -387,6 +387,12 @@ $('#results').on('click', function showMovies(){
             method: "GET"
           }).then(function(response) {
             console.log(queryURL)
+            console.log(response)
+            if (response.results[0].total_results === 0){
+              $('#movieSearch').remove()
+              var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
+              $('#addMovie').prepend(movieInput)
+            }
             //dropdown menu shows movie title + year
             $('#movieSearch').remove()
             var movieInput = $('<select id="movieSearch" class="custom-select"><option selected>Choose Your Movie</option>')
