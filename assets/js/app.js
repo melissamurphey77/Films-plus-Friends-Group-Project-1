@@ -317,16 +317,16 @@ $('#results').on('click', function showMovies(){
         return tmdbArr;
       }
       var newBtn = $('<button type="submit">')
-      newBtn.text("Confirm")
+      newBtn.text("Confirm Movie Selections")
       newBtn.attr('id', "pushSelection")
-      newBtn.attr("class", "btn btn-primary");
-      $('#movieDisplay').append(newBtn)
+      newBtn.attr("class", "btn btn-primary m-6");
+      $('#movieDisplay').prepend(newBtn)
       var deleteMovie = $('<button type="submit">')
       deleteMovie.text("Swap out a movie?")
       deleteMovie.attr('id', "deleteMovie")
-      deleteMovie.attr("class", "btn btn-primary")
-      $('#movieDisplay').append(deleteMovie)
-      var movieForm = $('<div id="addMovie" class="input-group input-group-sm mb-3 float-right w-25 p-4 col-2">')
+      deleteMovie.attr("class", "btn btn-primary m-6")
+      $('#movieDisplay').prepend(deleteMovie)
+      var movieForm = $('<div id="addMovie" class="input-group input-group-sm p-4 col-lg-6 offset-lg-3 col-sm-8 offset-sm-2 mt-10">')
       var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
       var movieInputGroup = $('<div class="input-group-append">')
       var addMovie = $('<button id="movieSearchSubmit" class="btn btn-primary px-3" type="submit"><i class="fas fa-search"></i>')
@@ -367,6 +367,7 @@ $('#results').on('click', function showMovies(){
       $('#deleteMovie').on('click', function(){
         $('.deleteBtn').show()
         $('#deleteMovie').hide()
+        $(".navbar").hide()
         $('.deleteBtn').on('click', function() {
           var titleDel = $(this).attr('data-title')
           var posterDel = $(this).attr('data-img')
@@ -395,7 +396,7 @@ $('#results').on('click', function showMovies(){
             }
             //dropdown menu shows movie title + year
             $('#movieSearch').remove()
-            var movieInput = $('<select id="movieSearch" class="custom-select"><option selected>Choose Your Movie</option>')
+            var movieInput = $('<select id="movieSearch" class="custom-select h-70"><option selected>Choose Your Movie</option>')
             $('#addMovie').prepend(movieInput)
             for(i=0, j=1, m=response.results.length;i<m, j<m+1;i++, j++){
               var newOption = $(`<option value="${j}">`)
@@ -500,6 +501,8 @@ $('#results').on('click', function showMovies(){
           })
           console.log(genKey)
           $('#movieDisplay').hide()
+          $('.searchBar').hide()
+          $('.navbar').show()
         inviationForm();
     var addFriendCount = 0;
 
