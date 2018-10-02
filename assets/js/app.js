@@ -658,6 +658,18 @@ $('#accessCodeBtn').on('click', function(){
   console.log("ive been clicked")
   var accessCode = $('#accessCode').val().trim()
   console.log(accessCode)
+  database.ref(accessCode).once("value")
+  .then(function(snapshot) {
+    snapshot.exists();  // true
+    if (!snapshot.exists()){
+      $('.modal-title').text("Not finding anything")
+      $('.modal-text').text("Please confirm you have typed out your access code properly. If you don't have one, click Get Started")
+      $(".modal").modal();
+      $('.close').on('click', function(){
+        document.location.reload();
+      })
+    }
+  });
 
   database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
     var returnArr = [];
@@ -798,32 +810,43 @@ $('#accessCodeBtn').on('click', function(){
                           contentType: 'application/json',
                           async: false
                       }).done(function() {
-                          console.log('Your mail is sent!');
+                        $('.modal-title').text("And the winner is...")
+                        $('.modal-text').text("")
+                        $(".modal").modal();
+                        $('.close').on('click', function(){
                           document.location.reload();
+                        })
+
                       }).fail(function(error) {
                         $('.modal-title').text("Reload the page and try again.")
                         $('.modal-text').text('Oops... ' + JSON.stringify(error))
                         $(".modal").modal();
+                        $('.close').on('click', function(){
                           document.location.reload();
+                        })
                       });
 
                     }//end of for loop
                   })
-                  //send data via email with saved poster URL and title
-                  //database.ref(accessCode).push().set().remove()
+                  //purge data from firebase after voting ends
+                  //ref.child(accessCode).remove();
                 } else {
                 //replace with moda
                 $('.modal-title').text("Right on!")
                 $('.modal-text').text("A few more friends still need to vote, keep an eye on your email for the results")
                 $(".modal").modal();
-                document.location.reload();
+                $('.close').on('click', function(){
+                  document.location.reload();
+                })
               }
             }
         } else {
           $('.modal-title').text("Oops!")
           $('.modal-text').text("Please make a selection before proceeding")
           $(".modal").modal();
-          document.location.reload();
+          $('.close').on('click', function(){
+            document.location.reload();
+          })
         }
         
         })
