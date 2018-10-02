@@ -62,7 +62,7 @@ input {
 }
 
 #footer {
-   position: fixed;
+   position: absolute;
    left: 0vh;
    bottom: 0vh;
    top: 93Vh;
