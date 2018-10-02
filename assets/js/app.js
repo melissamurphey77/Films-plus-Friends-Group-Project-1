@@ -801,7 +801,9 @@ $('#accessCodeBtn').on('click', function(){
                           console.log('Your mail is sent!');
                           document.location.reload();
                       }).fail(function(error) {
-                          console.log('Oops... ' + JSON.stringify(error));
+                        $('.modal-title').text("Reload the page and try again.")
+                        $('.modal-text').text('Oops... ' + JSON.stringify(error))
+                        $(".modal").modal();
                           document.location.reload();
                       });
 
