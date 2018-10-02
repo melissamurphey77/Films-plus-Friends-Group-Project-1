@@ -392,7 +392,9 @@ $('#results').on('click', function showMovies(){
               $('#movieSearch').remove()
               var movieInput = $('<input id="movieSearch" class="form-control" placeholder="Search for a movie!">')
               $('#addMovie').prepend(movieInput)
-              alert("We are not finding what you are looking for, please check spelling and try again.")
+              $('.modal-text').text("We aren't finding what your looking for, please check spelling and try again.")
+              $(".modal").modal();
+              console.log("modal should have fired")
             } else {
             //dropdown menu shows movie title + year
             $('#movieSearch').remove()
@@ -616,9 +618,12 @@ $('#results').on('click', function showMovies(){
                 contentType: 'application/json',
                 async: false
             }).done(function() {
-                alert('Your mail is sent!');
+              $('.modal-text').text("Your email has been sent!")
+              $(".modal").modal();
             }).fail(function(error) {
-                alert('Oops... ' + JSON.stringify(error));
+              $('.modal-title').text("Reload the page and try again.")
+              $('.modal-text').text('Oops... ' + JSON.stringify(error))
+              $(".modal").modal();
             });
 
             };//end for loop
@@ -805,14 +810,18 @@ $('#accessCodeBtn').on('click', function(){
                   //send data via email with saved poster URL and title
                   //database.ref(accessCode).push().set().remove()
                 } else {
-                //replace with modal
-                alert("A few more friends still need to vote, keep an eye on your email for the results")
+                //replace with moda
+                $('.modal-title').text("Right on!")
+                $('.modal-text').text("A few more friends still need to vote, keep an eye on your email for the results")
+                $(".modal").modal();
                 document.location.reload();
               }
             }
         } else {
-          alert("Please make a selection before proceeding")
-          //will replace this with Modal, but looks OK for now
+          $('.modal-title').text("Oops!")
+          $('.modal-text').text("Please make a selection before proceeding")
+          $(".modal").modal();
+          document.location.reload();
         }
         
         })
