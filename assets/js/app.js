@@ -272,9 +272,19 @@ $('#results').on('click', function showMovies(){
   var genreID = $("#genresDropdown option:selected").attr("id")
   //query is set to display rating less or equal to parameter so if pg-13 selected R or NC-17 will not populate. EXCEPTION - NR is technicaly ranked below G, 
   //so although some NR films are equivilent to this query, any film with an unrated version ex: American Pie Unrated will show
-  var rating = $("form input:checked").val();
+  var ratingArr = [];
+  $('form input:checked').each(function(i){
+    ratingArr[i] = $(this).val();
+  });
+    if(ratingArr.length>1){
+      var rating = ratingArr.join('|')
+      console.log("Multiple ratings: "+rating)
+    } else {
+      var rating = ratingArr[0]
+      console.log("only 1 rating: "+rating)
+    }
   //query URL for TMDB - used this DM over OMDB as it has a lot more search parameters
-  var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification.lte=" + rating +"&include_adult=false&include_video=false&page="+ pageNum +"&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
+  var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=vote_count.desc&certification_country=US&certification=" + rating +"&include_adult=false&include_video=false&page="+ pageNum +"&primary_release_date.lte=" + currentDate + "&with_genres=" + genreID
   $.ajax({
       //https://www.themoviedb.org/documentation/api
       url: queryURL,
