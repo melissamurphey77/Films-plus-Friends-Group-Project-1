@@ -115,10 +115,18 @@ $("#getStartedBtn").on("click", function () {
   //Steps to hide/clear the landing page and run makeSearchForm
     $("#container").empty();
     $("#footer").hide();
+
+    var helloImg = $("<img>");
+    helloImg.attr("src", "assets/images/hello.png");
+    helloImg.attr("class", "animated fadeInUp");
+  
+    helloImg.appendTo("#greeting");
+
     makeSearchForm();
 
   //Function to generate the Form that gathers information needed to process the API call
 function makeSearchForm() {
+
   //Create the Form to which all form fields will be appended
   var searchForm = $("<form>");
 
@@ -246,7 +254,7 @@ function makeSearchForm() {
 
 };
 $('#results').on('click', function showMovies(){
-
+  $("#greeting").empty();
 
   event.preventDefault();
   //Assigns the user inputed name to the name varriable
@@ -474,6 +482,7 @@ $('#results').on('click', function showMovies(){
       })
       //creates button that will submit results and trigger firebase call
       $("#pushSelection").on("click", function() {
+        
           movieDBTitle = []
           movieDBPoster = []
           movieDBPush = []
@@ -506,6 +515,7 @@ $('#results').on('click', function showMovies(){
           $('#movieDisplay').hide()
           $('.searchBar').hide()
           $('.navbar').show()
+
         inviationForm();
     var addFriendCount = 0;
 
