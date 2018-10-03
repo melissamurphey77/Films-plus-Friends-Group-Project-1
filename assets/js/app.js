@@ -622,15 +622,19 @@ $('#results').on('click', function showMovies(){
             }).done(function() {
               $('.modal-text').text("Your email has been sent!")
               $(".modal").modal();
+              $('.close').on('click', function(){
+                document.location.reload()
+              })
             }).fail(function(error) {
               $('.modal-title').text("Reload the page and try again.")
               $('.modal-text').text('Oops... ' + JSON.stringify(error))
               $(".modal").modal();
+              $('.close').on('click', function(){
+                document.location.reload()
+              })
             });
 
             };//end for loop
-           
-            document.location.reload();
           });
           
           
@@ -801,8 +805,8 @@ $('#accessCodeBtn').on('click', function(){
                         user_id: 'user_f8xmQlMBlmM86ckD62Lis',
                         template_params: {
                           'email': finalEmail,
-                          'movietitle': winningPoster,
-                          'movieposter': winningTitle
+                          'movietitle': winningTitle,
+                          'movieposter': winningPoster
                         }
                       };
                    
