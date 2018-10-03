@@ -133,7 +133,18 @@ a.labels:hover {
 .movieImg:hover{ 
     position: relative; 
     top: -10px;
+    -webkit-box-shadow: 0px 0px 66px 2px #f7811e;
+    -moz-box-shadow: 0px 0px 66px 2px #f7811e;
+    box-shadow: 0px 0px 66px 2px #f7811e;
 } 
+
+.selected {
+    position: relative; 
+    top: -10px;
+    -webkit-box-shadow: 0px 0px 66px 2px #f7811e;
+    -moz-box-shadow: 0px 0px 66px 2px #f7811e;
+    box-shadow: 0px 0px 66px 2px #f7811e;
+}
 
 .posterDiv {
     position: relative;
@@ -280,7 +291,9 @@ a.labels:hover {
     background-color: #f7811e;
     padding-top: 10vh;
 }
-
+.modal-backdrop {
+    opacity:0.5 !important;
+}
 .index-link {
     border-color: #2991e2;
     background-color: #f7811e;
