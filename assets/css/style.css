@@ -3,6 +3,7 @@ body {
     background-color: #2991e2;
     font-family: 'Montserrat', sans-serif;
     height:100%;
+    overflow-x: hidden;
 }
 
 form {
@@ -213,6 +214,73 @@ input {
     
     
 }
+
+.intro {
+    height: 100vh;
+}
+.introPoster-1 {
+    position:absolute;  
+    z-index:auto;
+    box-shadow: -5px 10px 50px 0px black; 
+}
+.introPoster-2 {
+    position:absolute;  
+    z-index:1;  
+    left:50px;  
+    top:50px;
+    box-shadow: -5px 10px 50px 0px black;
+    animation-delay: 0.3s; 
+}
+.introPoster-3 {
+    position:absolute;  
+    z-index:2;  
+    left:100px;  
+    top:100px;
+    box-shadow: -5px 10px 50px 0px black;
+    animation-delay: 0.6s; 
+}
+.introPoster-4 {
+    position:absolute;  
+    z-index:2;  
+    left:150px;  
+    top:150px;
+    box-shadow: -5px 10px 50px 0px black;
+    animation-delay: 0.9s;  
+}
+.introPoster-5 {
+    position:absolute;  
+    z-index:2;  
+    left:200px;  
+    top:200px; 
+    box-shadow: -5px 10px 50px 0px black;
+    animation-delay: 1.2s;  
+}
+.about-logo {
+    animation-delay: 0.3s; 
+}
+.info-text {
+    animation-delay: 0.9s;
+}
+.about-text {
+    font-size: 15px;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+}
+.sources {
+    height: 100vh;
+    background-color: #f7811e;
+}
+.index-link {
+    border-color: #2991e2;
+    background-color: #f7811e;
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    border-width: 2px;
+    width: 30%;
+    font-size: 25px;
+}
+
 
 /* CSS styling for scrolling search bar */
 /*https://codepen.io/CBeghin/pen/HeuiF*/
