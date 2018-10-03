@@ -324,7 +324,7 @@ $('#results').on('click', function showMovies(){
         return tmdbArr;
       }
       var newBtn = $('<button type="submit">')
-      newBtn.text("Confirm Movie Selections")
+      newBtn.text("Confirm Selections")
       newBtn.attr('id', "pushSelection")
       newBtn.attr("class", "btn btn-primary m-6");
       $('#movieDisplay').prepend(newBtn)
