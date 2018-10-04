@@ -237,13 +237,16 @@ a.labels:hover {
     animation-delay: 0.9s;
 }
 .posterStack {
-    padding-top: 10vh;
+    padding-top: 5vh;
 }
 .about-text {
-    font-size: 25px;
+    font-size: 15px;
     color: #fff;
     font-weight: bold;
     text-shadow: 2px 2px 4px black;
+}
+.lead {
+    font-size: 10px;
 }
 .sources {
     height: 100vh;
