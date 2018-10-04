@@ -25,7 +25,7 @@
       <!---->
 </head>
 <body>
-    <div class="intro container-fluid">
+    <div class="intro container-fluid posterStack">
         <div class="row pt-2 pl-2">
             <div class="col-4 pt-4 pl-4">
                 <img class="introPoster-1 img-responsive w-50 animated fadeInRight" src="assets/images/bladerunner.jpg" alt="bladerunner.jpg">
@@ -34,12 +34,12 @@
                 <img class="introPoster-4 img-responsive w-50 animated fadeInRight" src="assets/images/infinitywar.jpg" alt="infinitywar">
                 <img class="introPoster-5 img-responsive w-50 animated fadeInRight" src="assets/images/loveactually.jpg" alt="loveactually">
             </div>
-            <div class="col-8 text-center pt-4">
+            <div class="col-8 text-center pt-4 infoDiv">
                 <div class="pt-4">
                     <img class="about-logo text-center w-50 animated fadeInRight" src="assets/images/filmsFriendsEmpty.svg" alt="films&friends">
                 </div>
-                <div class="info-text pt-4 animated fadeInRight">
-                    <p class="about-text">For the undecisive movie lover in all of us, Films Plus Friends is your one stop shop for planning a movie night. We will generate 5 movies for you based on rating and genre, you can either keep or swap out with your own movies. After you pick your movies, invite your friends to vote on what you watch!</p>
+                <div class="info-text pt-4 pr-4 animated fadeInRight">
+                    <p class="about-text">For the undecisive movie lover in all of us, Films Plus Friends is your one stop shop for planning a movie night. We will generate 5 movies for you based on rating and genre, you can either keep or swap out to create the ultimate movie playlist. After you pick your movies, invite your friends to vote on what you watch!</p>
                     <p class="about-text">It's simple, it's fun, and you might even discover a new favorite movie!</p>
                 </div>
                 <div class="pt-4">
@@ -48,16 +48,42 @@
             </div>
         </div>
     </div>
-    <div class="sources row">
-        <div class="col-8">
-            <div class="info-text pt-4 animated fadeInLeft">
-                <p class="about-text">
-                    
-                </p>
+    <div id="footer" class="about-text"><i class="fas fa-arrow-down"></i> Libraries & API's <i class="fas fa-arrow-down"></i></div>
+    <div class="sources container-fluid">
+        <div class="row">
+            <div class="col-8">
+                <div class="info-text firebase">
+                    <h1 class="about-text">Firebase</h1>
+                    <p class="about-text font-weight-normal pl-2">
+                        User data and Movie selections are sent to Firebase to be queried by later in the process. Each session gets a unique Access ID that is sent to the hosts and guests to allow them to vote on the Movies selected.
+                    </p>
+                    <p class="lead pl-4">Read more about <a href="https://firebase.google.com/">Firebase</a></p>
+                </div>
+                <div class="info-text pt-4 API">
+                    <h1 class="about-text">API</h1>
+                    <h3 class="about-text font-weight-normal pl-2">TMDB - The Movie Database:</h3>
+                    <p class="about-text font-weight-light pl-4">
+                        TMDB has a large and comprehensive library of Movies and includes severable queriable filters when connecting to the DB. Allowing us to generate random Movies based on user input and movies based on user search.
+                    </p>
+                    <p class="lead pl-4">Read more about <a href="https://www.themoviedb.org/?language=en-US">TMDB</a></p>
+                    <h3 class="about-text pl-2 font-weight-normal">EmailJS:</h3>
+                    <p class="about-text font-weight-light pl-4">
+                        Email.js allows users to use their API to handle sending emails as opposed to installing the component on your site. The API allows you to create templates that can include dynamic variables and reference the template ID right in the API call so keeps formatting clean and easy.
+                    </p>
+                    <p class="lead pl-4">Read more about <a href="http://www.emailjs.com/">EmailJS</a></p>
+                </div>
+                <div class="info-text pt-4 library">
+                    <h1 class="about-text">JS Library</h1>
+                    <h3 class="about-text font-weight-normal pl-2">Animate.css:</h3>
+                    <p class="about-text font-weight-light pl-4">
+                       Animate.css is an animations library that allows you to target elements with animations by adding a class similar to Bootstrap. This library handles all the animations on our site.
+                    </p>
+                    <p class="lead pl-4">Read more about <a href="https://daneden.github.io/animate.css/">Animate.css</a></p>
+                </div>
             </div>
-        </div>
-        <div class="col-4">
-            <!--INSERT PICTURE HERE-->
+            <div class="col-4">
+                <!--INSERT PICTURE HERE-->
+            </div>
         </div>
     </div>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

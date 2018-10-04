@@ -374,7 +374,6 @@ $('#results').on('click', function showMovies(){
       $('#deleteMovie').on('click', function(){
         $('.deleteBtn').show()
         $('#deleteMovie').hide()
-        $(".navbar").hide()
         $('.deleteBtn').on('click', function() {
           var titleDel = $(this).attr('data-title')
           var posterDel = $(this).attr('data-img')
@@ -684,9 +683,8 @@ $('#accessCodeBtn').on('click', function(){
       $('.close').on('click', function(){
         document.location.reload();
       })
-    }
-  });
-
+    } 
+  else {
   database.ref(accessCode).on('value', function snapshotToArray(snapshot) {
     var returnArr = [];
     snapshot.forEach(function(childSnapshot) {
@@ -698,10 +696,10 @@ $('#accessCodeBtn').on('click', function(){
     console.log(returnArr)
     $('#header, #container, #footer, #accessCodeDiv').hide()
     $('.navbar').show()
-    var votingDiv = $('#votingDisplay')
-    votingDiv.append('<div>')
-    votingDiv.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
-    votingDiv.append('<br>')
+    var votingContainer = $('#votingDisplay')
+    var imgDiv = $('<div>')
+    votingContainer.append('<h1>').addClass('text-center titleText p-4 m-4').text('Select Feature, then cast your vote')
+    votingContainer.append(imgDiv)
     var maxMoviePosterArr = [returnArr[3].Movie_0.Poster, returnArr[3].Movie_1.Poster, returnArr[3].Movie_2.Poster, returnArr[3].Movie_3.Poster, returnArr[3].Movie_4.Poster]
     var maxMovieNameArr = [returnArr[3].Movie_0.Title, returnArr[3].Movie_1.Title, returnArr[3].Movie_2.Title, returnArr[3].Movie_3.Title, returnArr[3].Movie_4.Title]
     var moviePosterArr = []
@@ -716,10 +714,12 @@ $('#accessCodeBtn').on('click', function(){
     }
     console.log(maxMovieNameArr, maxMoviePosterArr)
     for (i=0; i<featureCount; i++) {
-      var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).addClass('w-25 p-2 movieImg').attr('id', movieNameArr[i])
+      var votingPoster = $('<img>').attr('src', moviePosterArr[i]).attr('data', `Movie_${i}`).addClass('w-75 position-relative movieImg').attr('id', movieNameArr[i])
+      var votingDiv = $('<div>').addClass('posterDiv m-0 p-4')
       votingDiv.append(votingPoster)
+      imgDiv.append(votingDiv)
     }
-    votingDiv.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
+    votingContainer.append('<button id="submitVote" class="btn btn-primary">Register Vote</button>')
     $('.movieImg').on('click', function(){
       $('.movieImg').each(function(){
         $('.movieImg').removeClass('selected')
@@ -738,11 +738,6 @@ $('#accessCodeBtn').on('click', function(){
               "Vote_Count": votePlus
             })
           })
-          $('#votingDisplay').hide()
-          var animeDiv = $('<div>').addClass('loadingBar')
-          var messageDiv = $('<div>').append('<h1>').text("Thank You for voting!")
-          messageDiv.append(animeDiv)
-          $('#messageDisplay').append(messageDiv)
             checkVotes()
             function checkVotes(){
               //query firebase for votenumber of every movie
@@ -868,4 +863,6 @@ $('#accessCodeBtn').on('click', function(){
         })
       })
     })
-  })
+    }
+  });
+})
