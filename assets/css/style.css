@@ -53,7 +53,10 @@ a.labels:hover {
 #ratingsGroup {
     margin: 0;
 }
-
+#votingDisplay {
+    width: 100%;
+    padding: 0% !important;
+}
 #addFriendBtn {
     color: #fff;
     padding: 0;
