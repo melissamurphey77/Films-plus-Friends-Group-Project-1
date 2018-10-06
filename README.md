@@ -8,3 +8,8 @@ The information is stored in firebase along with contact info provided by the us
 Emailjs handles sending communications out to the host and attendees and sends an initial invite email as well as a results email.
 
 For more information, see the More information page on the site.
+
+## Authors
+Hunter Trammell (https://huntertrammell.github.io/)
+Callie Hart (https://calliehart.github.io/)
+Melissa Murphey (https://melissamurphey.github.io/)
