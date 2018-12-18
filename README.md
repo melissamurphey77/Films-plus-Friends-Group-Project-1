@@ -12,4 +12,4 @@ For more information, see the More information page on the site.
 ## Authors
 Hunter Trammell (https://huntertrammell.github.io/)
 Callie Hart (https://calliehart.github.io/)
-Melissa Murphey (https://melissamurphey.github.io/)
+Melissa Murphey (https://melissamurphey77.github.io/MelissaMurpheyDesigns/)
